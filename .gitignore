@@ -11,5 +11,11 @@ target/
 .project
 .settings/
 
+# Log files
+logs/
+
 # Windows stuff
 Thumbs.db
+
+# Zendesk config file
+zendesk.properties
