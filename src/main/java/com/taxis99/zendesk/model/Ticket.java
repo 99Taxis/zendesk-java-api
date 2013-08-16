@@ -19,10 +19,14 @@ public class Ticket {
    */
   Integer requesterId;
 
+  @Nullable @ReadOnly Integer id;
+
   /**
    * Automatically assigned when creating tickets
    */
-  @Nullable @ReadOnly Integer id;
+  public Integer getId() {
+    return id;
+  }
 
   /**
    * The API url of this ticket
@@ -88,7 +92,16 @@ public class Ticket {
    * The array of tags applied to this ticket
    */
   Set<String> tags;
-  
+
+  /**
+   * Check if the array of tags of this ticket contains the given tag
+   * @param tag 
+   * @return true if the ticket contains this tag, false otherwise
+   */
+  public boolean hasTag(String tag) {
+    return tags.contains(tag);
+  }
+
   /**
    * The custom fields of the ticket
    */
@@ -110,4 +123,5 @@ public class Ticket {
    * Requesters can explicitly be created handling tickets
    */
   @Nullable TicketRequester requester;
+
 }

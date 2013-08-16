@@ -1,6 +1,6 @@
 package com.taxis99.zendesk;
 
-import java.util.List;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.inject.Guice;
@@ -32,7 +32,7 @@ class ZendeskExampleApp {
 
   void printTicket() {
     try {
-      Ticket ticket = zendeskApi.getTicketById("1");
+      Ticket ticket = zendeskApi.getTicketById(1);
       System.out.println(gson.toJson(ticket));
     } catch (ZendeskException e) {
       e.printStackTrace();
@@ -41,7 +41,7 @@ class ZendeskExampleApp {
 
   void printTicketsList() {
     try {
-      List<Ticket> tickets = zendeskApi.getRecentTickets();
+      Set<Ticket> tickets = zendeskApi.getRecentTickets();
       System.out.println(gson.toJson(tickets));
     } catch (ZendeskException e) {
       e.printStackTrace();
