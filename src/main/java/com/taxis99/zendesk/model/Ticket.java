@@ -6,92 +6,240 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.taxis99.zendesk.config.GsonInstanceHolder;
+
 /**
  * http://developer.zendesk.com/documentation/rest_api/tickets.html#json-format
  * 
  * @author miguel
  *
  */
-public class Ticket {
+public class Ticket implements Comparable<Ticket> {
+
+  Integer requesterId;
 
   /**
    * The numeric ID of the user asking for support through the ticket.
    */
-  Integer requesterId;
+  public Integer getRequesterId() {
+    return requesterId;
+  }
 
-  @Nullable @ReadOnly Integer id;
+  /**
+   * The numeric ID of the user asking for support through the ticket.
+   */
+  public void setRequesterId(Integer requesterId) {
+    this.requesterId = requesterId;
+  }
+
+  Integer id;
 
   /**
    * Automatically assigned when creating tickets
    */
-  public Integer getId() {
+  @Nullable public Integer getId() {
     return id;
   }
+
+  String url;
 
   /**
    * The API url of this ticket
    */
-  @Nullable @ReadOnly String url;
-  
+  @Nullable public String getUrl() {
+    return url;
+  }
+
+  String externalId;
+
   /**
    * A unique external id, you can use this to link Zendesk tickets to local records
    */
-  @Nullable String externalId;
-  
+  @Nullable public String getExternalId() {
+    return externalId;
+  }
+
+  /**
+   * A unique external id, you can use this to link Zendesk tickets to local records
+   */
+  public void setExternalId(String externalId) {
+    this.externalId = externalId;
+  }
+
+  String subject;
+
+  /**
+   * The value of the subject field for this ticket
+   */
+  @Nullable public String getSubject() {
+    return subject;
+  }
+
+  /**
+   * The value of the subject field for this ticket
+   */
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
+
+  TicketVia via;
+
   /**
    * This object explains how the ticket was created
    */
-  @Nullable @ReadOnly TicketVia via;
+  @Nullable public TicketVia getVia() {
+    return via;
+  }
+
+
+  Integer assigneeId;
 
   /**
    * What agent is currently assigned to the ticket
    */
-  @Nullable Integer assigneeId;
-  
+  @Nullable public Integer getAssigneeId() {
+    return assigneeId;
+  }
+
+  /**
+   * What agent is going to be assigned to the ticket
+   */
+  public void setAssigneeId(Integer assigneeId) {
+    this.assigneeId = assigneeId;
+  }
+
+  TicketStatus status;
+
   /**
    * The state of the ticket
    */
-  @Nullable TicketStatus status;
-  
+  @Nullable public TicketStatus getStatus() {
+    return status;
+  }
+
+  /**
+   * The state of the ticket
+   */
+  public void setStatus(TicketStatus status) {
+    this.status = status;
+  }
+
+  TicketType type;
+
   /**
    * The type of this ticket
    */
-  @Nullable TicketType type;
-  
+  @Nullable public TicketType getType() {
+    return type;
+  }
+
+  /**
+   * The type of this ticket
+   */
+  public void setType(TicketType type) {
+    this.type = type;
+  }
+
+  TicketPriority priority;
+
   /**
    * Priority, defines the urgency with which the ticket should be addressed
    */
-  @Nullable TicketPriority priority;
+  @Nullable public TicketPriority getPriority() {
+    return priority;
+  }
+
+  /**
+   * Priority, defines the urgency with which the ticket should be addressed
+   */
+  public void setPriority(TicketPriority priority) {
+    this.priority = priority;
+  }
   
+
+  Integer problemId;
+
   /**
    * The problem this incident is linked to, if any
    */
-  @Nullable Integer problemId;
-  
+  @Nullable public Integer getProblemId() {
+    return problemId;
+  }
+
+  /**
+   * The problem this incident will be linked to
+   */
+  public void setProblemId(Integer problemId) {
+    this.problemId = problemId;
+  }
+
+  Boolean hasIncidents;
+
   /**
    * Is true of this ticket has been marked as a problem, false otherwise
    */
-  @Nullable @ReadOnly Boolean hasIncidents;
-  
+  @Nullable public Boolean getHasIncidents() {
+    return hasIncidents;
+  }
+
+  Date createdAt;
+
   /**
    * When this record was created
    */
-  @Nullable @ReadOnly Date createdAt;
+  @Nullable public Date getCreatedAt() {
+    return createdAt;
+  }
   
+
+  Date updatedAt;
+
   /**
    * When this record last got updated
    */
-  @Nullable @ReadOnly Date updatedAt;
+  @Nullable public Date getUpdatedAt() {
+    return updatedAt;
+  }
   
+
+  Date dueAt; // for tasks
+
   /**
    * If this is a ticket of type "task" it has a due date
    */
-  @Nullable Date dueAt; // for tasks
+  @Nullable public Date getDueAt() {
+    return dueAt;
+  }
+
+  /**
+   * Sets the due date of this ticket of type "task" 
+   * 
+   * @throws IllegalStateException if the ticket is not of the type "task"
+   */
+  public void setDueAt(Date dueAt) {
+    if (this.type != TicketType.TASK) {
+      throw new IllegalStateException("Only a ticket of type task can have a due date");
+    }
+    this.dueAt = dueAt;
+  }
   
+
+  Set<String> tags;
+
   /**
    * The array of tags applied to this ticket
    */
-  Set<String> tags;
+  public Set<String> getTags() {
+    return tags;
+  }
+
+  /**
+   * Sets a new array of tags applied to this ticket
+   */
+  public void setTags(Set<String> tags) {
+    this.tags = tags;
+  }
 
   /**
    * Check if the array of tags of this ticket contains the given tag
@@ -102,26 +250,50 @@ public class Ticket {
     return tags.contains(tag);
   }
 
+  
+  List<String> customFields;
+
   /**
    * The custom fields of the ticket
    */
-  List<String> customFields;
-  
+  public List<String> getCustomFields() {
+    return customFields;
+  }
+
   /**
-   * The value of the subject field for this ticket
+   * The custom fields of the ticket
    */
-  @Nullable String subject;
+  public void setCustomFields(List<String> customFields) {
+    this.customFields = customFields;
+  }
+
+  @Override public int compareTo(Ticket other) {
+    return this.id.compareTo(other.id);
+  }
+
+  private static final Gson gson = GsonInstanceHolder.getDefaultBuilder().setPrettyPrinting().create();
+  
+  @Override public String toString() {
+    return "{ " + super.toString() + ": " + gson.toJson(this) + " }";
+  }
   
   // For ticket creation
-  
+
+  @Nullable TicketComment comment;
+
   /**
    * An object that adds a comment to the ticket.
    */
-  @Nullable TicketComment comment;
-  
+  public void setComment(TicketComment comment) {
+    this.comment = comment;
+  }
+
+  @Nullable TicketRequester requester;
+
   /**
    * Requesters can explicitly be created handling tickets
    */
-  @Nullable TicketRequester requester;
-
+  public void setRequester(TicketRequester requester) {
+    this.requester = requester;
+  }
 }
