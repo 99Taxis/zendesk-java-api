@@ -251,19 +251,19 @@ public class Ticket implements Comparable<Ticket> {
   }
 
   
-  List<String> customFields;
+  List<TicketField> customFields;
 
   /**
    * The custom fields of the ticket
    */
-  public List<String> getCustomFields() {
+  public List<TicketField> getCustomFields() {
     return customFields;
   }
 
   /**
    * The custom fields of the ticket
    */
-  public void setCustomFields(List<String> customFields) {
+  public void setCustomFields(List<TicketField> customFields) {
     this.customFields = customFields;
   }
 

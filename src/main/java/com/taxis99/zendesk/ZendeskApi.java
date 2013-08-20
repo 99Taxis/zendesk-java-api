@@ -20,6 +20,7 @@ import com.google.inject.name.Named;
 import com.taxis99.zendesk.config.ZendeskConfig;
 import com.taxis99.zendesk.exceptions.ZendeskException;
 import com.taxis99.zendesk.model.Ticket;
+import com.taxis99.zendesk.model.TicketFieldSpec;
 
 public class ZendeskApi {
   private static final Logger logger = LoggerFactory.getLogger(ZendeskApi.class);
@@ -64,6 +65,14 @@ public class ZendeskApi {
   public Set<Ticket> getTicketsById(Collection<Integer> ticketIds) throws ZendeskException {
     return get("/api/v2/tickets/show_many.json?ids=" + commaJoiner.join(ticketIds), getJsonToSetFn());
   }
+  
+  public TicketFieldSpec getTicketFieldById(final int ticketFieldId) throws ZendeskException {
+    return get("/api/v2/ticket_fields/" + ticketFieldId + ".json", new Function<String, TicketFieldSpec>() {
+      @Override public TicketFieldSpec apply(final String result) {
+        return gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
+      }
+    });
+  }
 
   private <E> E get(String apiStr, Function<String, E> fn) throws ZendeskException {
     try {
@@ -93,5 +102,12 @@ class TicketSetContainer {
   private Set<Ticket> tickets;
   Set<Ticket> getTickets() {
     return tickets;
+  }
+}
+
+class TicketFieldSpecContainer {
+  private TicketFieldSpec ticketField;
+  public TicketFieldSpec getTicketFieldSpec() {
+    return ticketField;
   }
 }

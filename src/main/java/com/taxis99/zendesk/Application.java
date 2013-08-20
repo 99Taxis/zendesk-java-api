@@ -10,6 +10,7 @@ import com.taxis99.zendesk.config.GsonInstanceHolder;
 import com.taxis99.zendesk.config.ZendeskConfigModule;
 import com.taxis99.zendesk.exceptions.ZendeskException;
 import com.taxis99.zendesk.model.Ticket;
+import com.taxis99.zendesk.model.TicketFieldSpec;
 
 public class Application {
 
@@ -18,6 +19,7 @@ public class Application {
     final ZendeskExampleApp zendeskExampleApp = injector.getInstance(ZendeskExampleApp.class);
     zendeskExampleApp.printTicket();
     zendeskExampleApp.printTicketsList();
+    zendeskExampleApp.printTicketFieldSpec();
   }
 }
 
@@ -43,6 +45,15 @@ class ZendeskExampleApp {
     try {
       Set<Ticket> tickets = zendeskApi.getRecentTickets();
       System.out.println(gson.toJson(tickets));
+    } catch (ZendeskException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  void printTicketFieldSpec() {
+    try {
+      TicketFieldSpec ticket = zendeskApi.getTicketFieldById(1);
+      System.out.println(gson.toJson(ticket));
     } catch (ZendeskException e) {
       e.printStackTrace();
     }
