@@ -27,12 +27,12 @@ public class ZendeskApi {
   private final Gson gson;
 
   private final String authEncoded;
-  private final String organization;
+  private final String subdomain;
 
   @Inject public ZendeskApi(final Gson gson, @Named("Authorized") final ZendeskConfig config) {
     this.gson = gson;
     this.authEncoded = new String(Base64.encodeBase64(config.getAuth().getBytes()), StandardCharsets.US_ASCII);
-    this.organization = config.getOrganizaton();
+    this.subdomain = config.getSubdomain();
   }
 
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
@@ -68,7 +68,7 @@ public class ZendeskApi {
   private <E> E get(String apiStr, Function<String, E> fn) throws ZendeskException {
     try {
       HttpResponse response = Request
-        .Get("https://" + organization + ".zendesk.com" + apiStr)
+        .Get("https://" + subdomain + ".zendesk.com" + apiStr)
         .addHeader("Content-Type", "application/json")
         .addHeader("Authorization", "Basic " + authEncoded)
         .execute().returnResponse();

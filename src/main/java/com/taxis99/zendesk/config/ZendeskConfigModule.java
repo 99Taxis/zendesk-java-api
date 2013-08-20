@@ -18,7 +18,7 @@ public class ZendeskConfigModule extends AbstractModule {
 //  @Override public String getAuth() {
 //    return "user@domain.com/token:AuTh_T0K3N-Fr0M_Z3nDesK";
 //  }
-//  @Override public String getOrganizaton() {
-//    return "organization";
+//  @Override public String getSubdomain() {
+//    return "subdomain";
 //  }
 //}

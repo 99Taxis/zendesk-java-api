@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class ZendeskConfigFromProperties implements ZendeskConfig {
 
-  private final String organization;
+  private final String subdomain;
   private final String authUser;
   private final String authToken;
 
@@ -14,7 +14,7 @@ public class ZendeskConfigFromProperties implements ZendeskConfig {
     try (InputStream resource = ZendeskConfigFromProperties.class.getResourceAsStream("/zendesk.properties")) {
       final Properties properties = new Properties();
       properties.load(resource);
-      this.organization = properties.getProperty("organization");
+      this.subdomain = properties.getProperty("subdomain");
       this.authUser = properties.getProperty("authUser");
       this.authToken = properties.getProperty("authToken");
     } catch (IOException e) {
@@ -26,7 +26,7 @@ public class ZendeskConfigFromProperties implements ZendeskConfig {
     return authUser + "/token:" + authToken;
   }
 
-  @Override public String getOrganizaton() {
-    return organization;
+  @Override public String getSubdomain() {
+    return subdomain;
   }
 }
