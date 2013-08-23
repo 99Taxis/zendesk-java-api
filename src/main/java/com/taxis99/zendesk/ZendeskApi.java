@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,10 @@ public class ZendeskApi {
     this.gson = gson;
     this.authEncoded = new String(Base64.encodeBase64(config.getAuth().getBytes()), StandardCharsets.US_ASCII);
     this.subdomain = config.getSubdomain();
+  }
+
+  public void postTicket(final Ticket ticket) throws ZendeskException {
+    post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)));
   }
 
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
@@ -89,10 +94,31 @@ public class ZendeskApi {
       throw new ZendeskException("Unable to get Zendesk tickets", e);
     }
   }
+  private void post(String apiStr, String ticketStr) throws ZendeskException {
+  
+    HttpResponse response;
+	try {
+	  response = Request
+	      .Post("https://" + subdomain + ".zendesk.com" + apiStr)
+	      .addHeader("Content-Type", "application/json")
+	      .addHeader("Authorization", "Basic " + authEncoded)
+	      .body(new StringEntity(ticketStr))
+	      .execute().returnResponse();
+	  String result = EntityUtils.toString(response.getEntity());
+      logger.debug(result);
+    } catch (IOException | RuntimeException e) {
+      logger.error("Unable to post Zendesk ticket", e);
+      throw new ZendeskException("Unable to post Zendesk ticket", e);
+    }
+  }
+  
 }
 
 class TicketContainer {
   private Ticket ticket;
+  public TicketContainer(Ticket ticket) {
+    this.ticket = ticket;
+  }
   Ticket getTicket() {
     return ticket;
   }

@@ -296,4 +296,37 @@ public class Ticket implements Comparable<Ticket> {
   public void setRequester(TicketRequester requester) {
     this.requester = requester;
   }
+  
+  public static TicketBuilder Builder() {
+    return new TicketBuilder();
+  }
+  
+  public static class TicketBuilder {
+    final Ticket instance = new Ticket();
+    boolean mutable = true;
+    private void checkState() {
+      if (!mutable) {
+        throw new IllegalStateException("Cannot change state after build");
+      }
+    }
+    public TicketBuilder withSubject(String subject) {
+      checkState();
+      instance.setSubject(subject);
+      return this;
+    }
+    public TicketBuilder withComment(String comment) {
+      checkState();
+      instance.setComment(new TicketComment(comment));
+      return this;
+    }
+    public TicketBuilder byRequester(String name, String email) {
+      checkState();
+      instance.setRequester(new TicketRequester(name, email));
+      return this;
+    }
+    public Ticket build() {
+      mutable = false;
+      return instance;
+    }
+  }
 }
