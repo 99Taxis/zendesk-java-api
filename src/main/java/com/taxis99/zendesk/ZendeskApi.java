@@ -22,6 +22,7 @@ import com.taxis99.zendesk.config.ZendeskConfig;
 import com.taxis99.zendesk.exceptions.ZendeskException;
 import com.taxis99.zendesk.model.Ticket;
 import com.taxis99.zendesk.model.TicketFieldSpec;
+import com.taxis99.zendesk.model.User;
 
 public class ZendeskApi {
   private static final Logger logger = LoggerFactory.getLogger(ZendeskApi.class);
@@ -45,6 +46,14 @@ public class ZendeskApi {
     return get("/api/v2/tickets/" + ticketId + ".json", new Function<String, Ticket>() {
       @Override public Ticket apply(final String result) {
         return gson.fromJson(result, TicketContainer.class).getTicket();
+      }
+    });
+  }
+  
+  public User getUserById(final int userId) throws ZendeskException {
+    return get("/api/v2/users/" + userId + ".json", new Function<String, User>() {
+      @Override public User apply(final String result) {
+        return gson.fromJson(result, UserContainer.class).getUser();
       }
     });
   }
@@ -112,6 +121,16 @@ public class ZendeskApi {
     }
   }
   
+}
+
+class UserContainer {
+  private User user;
+  public UserContainer(User user) {
+    this.user = user;
+  }
+  User getUser() {
+    return user;
+  }
 }
 
 class TicketContainer {

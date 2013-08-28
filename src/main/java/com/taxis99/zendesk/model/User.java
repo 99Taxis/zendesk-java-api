@@ -15,7 +15,7 @@ public class User {
     return id;
   }
 
-  String url;// yes no
+  String url;
 
   /**
    * The API url of this user
@@ -157,7 +157,7 @@ public class User {
     this.verified = verified;
   }
 
-  String email;// no yes
+  String email;
 
   /**
    * The primary email address of this user
@@ -168,7 +168,7 @@ public class User {
     return email;
   }
 
-  String phone;// no no
+  String phone;
 
   /**
    * The primary phone number of this user
@@ -208,5 +208,4 @@ public class User {
   public void setPhoto(Attachment photo) {
     this.photo = photo;
   }
-
 }
