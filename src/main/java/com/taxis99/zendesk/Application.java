@@ -3,6 +3,7 @@ package com.taxis99.zendesk;
 import java.util.Set;
 
 import com.google.gson.Gson;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -15,7 +16,11 @@ import com.taxis99.zendesk.model.TicketFieldSpec;
 public class Application {
 
   public static void main(String[] args) {
-    final Injector injector = Guice.createInjector(new ZendeskConfigModule());
+    final Injector injector = Guice.createInjector(new ZendeskConfigModule(), new AbstractModule() {
+      @Override protected void configure() {
+        bind(Gson.class).toInstance(GsonInstanceHolder.getGsonInstance());
+      }
+    });
     final ZendeskExampleApp zendeskExampleApp = injector.getInstance(ZendeskExampleApp.class);
     zendeskExampleApp.printTicket();
     zendeskExampleApp.printTicketsList();
