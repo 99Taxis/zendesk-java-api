@@ -103,24 +103,23 @@ public class ZendeskApi {
       throw new ZendeskException("Unable to get Zendesk tickets", e);
     }
   }
+
   private void post(String apiStr, String ticketStr) throws ZendeskException {
-  
     HttpResponse response;
-	try {
-	  response = Request
-	      .Post("https://" + subdomain + ".zendesk.com" + apiStr)
-	      .addHeader("Content-Type", "application/json")
-	      .addHeader("Authorization", "Basic " + authEncoded)
-	      .body(new StringEntity(ticketStr))
-	      .execute().returnResponse();
-	  String result = EntityUtils.toString(response.getEntity());
+    try {
+	    response = Request
+        .Post("https://" + subdomain + ".zendesk.com" + apiStr)
+        .addHeader("Content-Type", "application/json")
+        .addHeader("Authorization", "Basic " + authEncoded)
+        .body(new StringEntity(ticketStr, StandardCharsets.UTF_8.name()))
+        .execute().returnResponse();
+      String result = EntityUtils.toString(response.getEntity());
       logger.debug(result);
     } catch (IOException | RuntimeException e) {
       logger.error("Unable to post Zendesk ticket", e);
       throw new ZendeskException("Unable to post Zendesk ticket", e);
     }
   }
-  
 }
 
 class UserContainer {
