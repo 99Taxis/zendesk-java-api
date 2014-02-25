@@ -107,6 +107,67 @@
       </resource>
     </resources>
 
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven.assembly.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven.dependency.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven.release.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven.resources.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin}</version>
+        </plugin>
+
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven.clean.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven.install.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven.deploy.plugin}</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
     <plugins>
 
       <plugin>
@@ -253,9 +314,15 @@
     <jdk.source>1.7</jdk.source>
     <jdk.target>1.7</jdk.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.assembly.plugin>2.4</maven.assembly.plugin>
+    <maven.dependency.plugin>2.8</maven.dependency.plugin>
+    <maven.release.plugin>2.4.2</maven.release.plugin>
     <maven.compiler.plugin>3.1</maven.compiler.plugin>
     <maven.resources.plugin>2.6</maven.resources.plugin>
-    <maven.dependency.plugin>2.8</maven.dependency.plugin>
+    <maven.jar.plugin>2.4</maven.jar.plugin>
+    <maven.clean.plugin>2.5</maven.clean.plugin>
+    <maven.install.plugin>2.5.1</maven.install.plugin>
+    <maven.deploy.plugin>2.8.1</maven.deploy.plugin>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.checkstyle.plugin>2.7</maven.checkstyle.plugin>
     <maven.cobertura.plugin>2.5.1</maven.cobertura.plugin>
