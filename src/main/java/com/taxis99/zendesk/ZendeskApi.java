@@ -30,12 +30,14 @@ public class ZendeskApi {
   private final Gson gson;
 
   private final String authEncoded;
-  private final String subdomain;
+  private final String zendeskHost;
+  private final int connTimeout;
 
   @Inject public ZendeskApi(final Gson gson, @Named("Authorized") final ZendeskConfig config) {
     this.gson = gson;
     this.authEncoded = new String(Base64.encodeBase64(config.getAuth().getBytes()), StandardCharsets.US_ASCII);
-    this.subdomain = config.getSubdomain();
+    this.zendeskHost = "https://" + config.getSubdomain() + ".zendesk.com";
+    this.connTimeout = config.getConnTimeout();
   }
 
   public void postTicket(final Ticket ticket) throws ZendeskException {
@@ -90,35 +92,53 @@ public class ZendeskApi {
 
   private <E> E get(String apiStr, Function<String, E> fn) throws ZendeskException {
     try {
-      HttpResponse response = Request
-        .Get("https://" + subdomain + ".zendesk.com" + apiStr)
+      final Request request = Request
+        .Get(zendeskHost + apiStr)
         .addHeader("Content-Type", "application/json")
         .addHeader("Authorization", "Basic " + authEncoded)
-        .execute().returnResponse();
-      String result = EntityUtils.toString(response.getEntity());
-      logger.debug(result);
-      return fn.apply(result);
-    } catch (IOException | RuntimeException e) {
-      logger.error("Unable to get Zendesk tickets", e);
-      throw new ZendeskException("Unable to get Zendesk tickets", e);
+        .connectTimeout(connTimeout);
+      try {
+        HttpResponse response = request
+          .execute()
+          .returnResponse();
+        String result = EntityUtils.toString(response.getEntity());
+        logger.debug(result);
+        return fn.apply(result);
+      } catch (IOException e) {
+        request.abort();
+        throw logException("get", e);
+      }
+    } catch (RuntimeException e) {
+      throw logException("get", e);
     }
   }
 
   private void post(String apiStr, String ticketStr) throws ZendeskException {
-    HttpResponse response;
     try {
-	    response = Request
-        .Post("https://" + subdomain + ".zendesk.com" + apiStr)
+      final Request request = Request
+        .Post(zendeskHost + apiStr)
         .addHeader("Content-Type", "application/json")
         .addHeader("Authorization", "Basic " + authEncoded)
-        .body(new StringEntity(ticketStr, StandardCharsets.UTF_8.name()))
-        .execute().returnResponse();
-      String result = EntityUtils.toString(response.getEntity());
-      logger.debug(result);
-    } catch (IOException | RuntimeException e) {
-      logger.error("Unable to post Zendesk ticket", e);
-      throw new ZendeskException("Unable to post Zendesk ticket", e);
+        .body(new StringEntity(ticketStr, StandardCharsets.UTF_8))
+        .connectTimeout(connTimeout);
+      try {
+  	    HttpResponse response = request
+          .execute()
+          .returnResponse();
+        String result = EntityUtils.toString(response.getEntity());
+        logger.debug(result);
+      } catch (IOException e) {
+        request.abort();
+        throw logException("post", e);
+      }
+    } catch (RuntimeException e) {
+      throw logException("post", e);
     }
+  }
+
+  private ZendeskException logException(String method, Exception e) throws ZendeskException {
+    logger.error("Unable to {} Zendesk ticket", method, e);
+    return new ZendeskException("Unable to " + method + " Zendesk ticket", e);
   }
 }
 

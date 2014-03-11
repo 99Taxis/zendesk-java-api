@@ -5,7 +5,7 @@
   <groupId>com.taxis99</groupId>
   <artifactId>zendesk-java-api</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 
   <name>zendesk-java-api</name>
   <url>https://github.com/99taxis/zendesk-java-api</url>
@@ -173,7 +173,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin}</version>
         <configuration>
           <source>${jdk.source}</source>
           <target>${jdk.target}</target>
@@ -184,7 +183,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven.resources.plugin}</version>
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
@@ -193,7 +191,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${maven.dependency.plugin}</version>
       </plugin>
 
       <plugin>

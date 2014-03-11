@@ -314,9 +314,9 @@ public class Ticket implements Comparable<Ticket> {
       instance.setSubject(subject);
       return this;
     }
-    public TicketBuilder withComment(String comment) {
+    public TicketBuilder withComment(String commentBody) {
       checkState();
-      instance.setComment(new TicketComment(comment));
+      instance.setComment(new TicketComment(commentBody));
       return this;
     }
     public TicketBuilder byRequester(String name, String email) {
