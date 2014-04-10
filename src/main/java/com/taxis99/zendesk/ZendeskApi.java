@@ -40,16 +40,24 @@ public class ZendeskApi {
     this.connTimeout = config.getConnTimeout();
   }
 
-  public void postTicket(final Ticket ticket) throws ZendeskException {
-    post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)));
+  private Function<String, Ticket> jsonToTicketFn;
+  private Function<String, Ticket> getJsonToTicketFn() {
+    if (jsonToTicketFn == null) {
+      jsonToTicketFn = new Function<String, Ticket>() {
+        @Override public Ticket apply(final String result) {
+          return gson.fromJson(result, TicketContainer.class).getTicket();
+        }
+      };
+    }
+    return jsonToTicketFn;
+  }
+
+  public Ticket postTicket(final Ticket ticket) throws ZendeskException {
+    return post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)), getJsonToTicketFn());
   }
 
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
-    return get("/api/v2/tickets/" + ticketId + ".json", new Function<String, Ticket>() {
-      @Override public Ticket apply(final String result) {
-        return gson.fromJson(result, TicketContainer.class).getTicket();
-      }
-    });
+    return get("/api/v2/tickets/" + ticketId + ".json", getJsonToTicketFn());
   }
   
   public User getUserById(final int userId) throws ZendeskException {
@@ -90,7 +98,16 @@ public class ZendeskApi {
     });
   }
 
+  public int getAssigneeId(final String email) {
+    // TODO implement this
+    return 0;
+  }
+
   private <E> E get(String apiStr, Function<String, E> fn) throws ZendeskException {
+    return fn.apply(get(apiStr));
+  }
+
+  private String get(String apiStr) throws ZendeskException {
     try {
       final Request request = Request
         .Get(zendeskHost + apiStr)
@@ -103,7 +120,7 @@ public class ZendeskApi {
           .returnResponse();
         String result = EntityUtils.toString(response.getEntity());
         logger.debug(result);
-        return fn.apply(result);
+        return result;
       } catch (IOException e) {
         request.abort();
         throw logException("get", e);
@@ -113,7 +130,11 @@ public class ZendeskApi {
     }
   }
 
-  private void post(String apiStr, String ticketStr) throws ZendeskException {
+  private <E> E post(String apiStr, String ticketStr, Function<String, E> fn) throws ZendeskException {
+    return fn.apply(post(apiStr, ticketStr));
+  }
+
+  private String post(String apiStr, String ticketStr) throws ZendeskException {
     try {
       final Request request = Request
         .Post(zendeskHost + apiStr)
@@ -127,6 +148,7 @@ public class ZendeskApi {
           .returnResponse();
         String result = EntityUtils.toString(response.getEntity());
         logger.debug(result);
+        return result;
       } catch (IOException e) {
         request.abort();
         throw logException("post", e);

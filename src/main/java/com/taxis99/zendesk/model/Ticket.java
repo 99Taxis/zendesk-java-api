@@ -324,6 +324,19 @@ public class Ticket implements Comparable<Ticket> {
       instance.setRequester(new TicketRequester(name, email));
       return this;
     }
+    public TicketBuilder setAssigneeId(int assigneeId) {
+      checkState();
+      instance.setAssigneeId(assigneeId);
+      return this;
+    }
+    public TicketBuilder withStatus(TicketStatus status) {
+      checkState();
+      if (instance.getAssigneeId() == null) {
+        throw new IllegalArgumentException("Ticket must be assigned to set status");
+      }
+      instance.setStatus(status);
+      return this;
+    }
     public Ticket build() {
       mutable = false;
       return instance;
