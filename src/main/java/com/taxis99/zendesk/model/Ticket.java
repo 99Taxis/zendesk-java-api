@@ -328,7 +328,12 @@ public class Ticket implements Comparable<Ticket> {
     }
     public TicketBuilder withComment(String commentBody) {
       checkState();
-      instance.setComment(new TicketComment(commentBody));
+      instance.setComment(new TicketComment(false, commentBody));
+      return this;
+    }
+    public TicketBuilder withPublicComment(String commentBody) {
+      checkState();
+      instance.setComment(new TicketComment(true, commentBody));
       return this;
     }
     public TicketBuilder byRequester(String name, String email) {
