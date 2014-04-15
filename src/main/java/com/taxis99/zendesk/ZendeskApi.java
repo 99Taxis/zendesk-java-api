@@ -53,7 +53,18 @@ public class ZendeskApi {
   }
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
+    if (ticket.getId() != null) {
+      new IllegalArgumentException("Cannot create ticket with previously set id");
+    }
     return post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)), getJsonToTicketFn());
+  }
+
+  public Ticket updateTicket(Ticket ticket) throws ZendeskException {
+    if (ticket.getId() == null) {
+      new IllegalArgumentException("Cannot update ticket without previously set id");
+    }
+    return put(String.format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
+        getJsonToTicketFn());
   }
 
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
@@ -158,8 +169,36 @@ public class ZendeskApi {
     }
   }
 
-  private ZendeskException logException(String method, Exception e) throws ZendeskException {
-    logger.error("Unable to {} Zendesk ticket", method, e);
+  private <E> E put(String apiStr, String ticketStr, Function<String, E> fn) throws ZendeskException {
+    return fn.apply(put(apiStr, ticketStr));
+  }
+
+  private String put(String apiStr, String ticketStr) throws ZendeskException {
+    try {
+      final Request request = Request
+        .Put(zendeskHost + apiStr)
+        .addHeader("Content-Type", "application/json")
+        .addHeader("Authorization", "Basic " + authEncoded)
+        .body(new StringEntity(ticketStr, StandardCharsets.UTF_8))
+        .connectTimeout(connTimeout);
+      try {
+        HttpResponse response = request
+          .execute()
+          .returnResponse();
+        String result = EntityUtils.toString(response.getEntity());
+        logger.debug(result);
+        return result;
+      } catch (IOException e) {
+        request.abort();
+        throw logException("put", e);
+      }
+    } catch (RuntimeException e) {
+      throw logException("put", e);
+    }
+  }
+
+  private static ZendeskException logException(String method, Exception e) {
+    logger.error("Unable to " + method + " Zendesk ticket" + e.getMessage());
     return new ZendeskException("Unable to " + method + " Zendesk ticket", e);
   }
 }

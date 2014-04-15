@@ -36,10 +36,17 @@ public class Ticket implements Comparable<Ticket> {
   Integer id;
 
   /**
-   * Automatically assigned when creating tickets
+   * The Zendesk ticket id, automatically assigned when creating tickets
    */
   @Nullable public Integer getId() {
     return id;
+  }
+
+  /**
+   * The Zendesk ticket id, automatically assigned when creating tickets
+   */
+  public void setId(Integer id) {
+    this.id = id;
   }
 
   String url;
@@ -308,6 +315,11 @@ public class Ticket implements Comparable<Ticket> {
       if (!mutable) {
         throw new IllegalStateException("Cannot change state after build");
       }
+    }
+    public TicketBuilder setTicketId(int ticketId) {
+      checkState();
+      instance.setId(ticketId);
+      return this;
     }
     public TicketBuilder withSubject(String subject) {
       checkState();
