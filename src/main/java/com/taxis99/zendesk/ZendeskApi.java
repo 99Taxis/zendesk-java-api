@@ -1,9 +1,16 @@
 package com.taxis99.zendesk;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Set;
+import com.taxis99.zendesk.config.ZendeskConfig;
+import com.taxis99.zendesk.exceptions.ZendeskException;
+import com.taxis99.zendesk.model.Ticket;
+import com.taxis99.zendesk.model.TicketFieldSpec;
+import com.taxis99.zendesk.model.User;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
@@ -13,16 +20,10 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.taxis99.zendesk.config.ZendeskConfig;
-import com.taxis99.zendesk.exceptions.ZendeskException;
-import com.taxis99.zendesk.model.Ticket;
-import com.taxis99.zendesk.model.TicketFieldSpec;
-import com.taxis99.zendesk.model.User;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Set;
 
 public class ZendeskApi {
   private static final Logger logger = LoggerFactory.getLogger(ZendeskApi.class);
@@ -54,14 +55,14 @@ public class ZendeskApi {
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
     if (ticket.getId() != null) {
-      new IllegalArgumentException("Cannot create ticket with previously set id");
+      throw new IllegalArgumentException("Cannot create ticket with previously set id");
     }
     return post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)), getJsonToTicketFn());
   }
 
   public Ticket updateTicket(Ticket ticket) throws ZendeskException {
     if (ticket.getId() == null) {
-      new IllegalArgumentException("Cannot update ticket without previously set id");
+      throw new IllegalArgumentException("Cannot update ticket without previously set id");
     }
     return put(String.format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
         getJsonToTicketFn());
