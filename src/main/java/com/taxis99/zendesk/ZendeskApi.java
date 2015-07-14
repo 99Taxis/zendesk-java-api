@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public class ZendeskApi {
@@ -53,6 +54,35 @@ public class ZendeskApi {
     return jsonToTicketFn;
   }
 
+  private Function<String, Set<Ticket>> jsonToSetFn;
+
+  private Function<String, Set<Ticket>> getJsonToSetFn() {
+    if (jsonToSetFn == null) {
+      jsonToSetFn = new Function<String, Set<Ticket>>() {
+        @Override
+        public Set<Ticket> apply(final String result) {
+          return gson.fromJson(result, TicketSetContainer.class).getTickets();
+        }
+      };
+    }
+    return jsonToSetFn;
+  }
+
+
+  private Function<String, Ticket> jsonSearchToTicketFn;
+
+  private Function<String, Ticket> getJsonSearchToTicketFn() {
+    if (jsonSearchToTicketFn == null) {
+      jsonSearchToTicketFn = new Function<String, Ticket>() {
+        @Override
+        public Ticket apply(final String result) {
+          return gson.fromJson(result, TicketSearchResult.class).getTicket();
+        }
+      };
+    }
+    return jsonSearchToTicketFn;
+  }
+
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
     if (ticket.getId() != null) {
       throw new IllegalArgumentException("Cannot create ticket with previously set id");
@@ -71,25 +101,17 @@ public class ZendeskApi {
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
     return get("/api/v2/tickets/" + ticketId + ".json", getJsonToTicketFn());
   }
-  
+
+  public Ticket getTicketByCustomField(final String searchTerm) throws ZendeskException {
+    return get("/api/v2/search.json?query=type:ticket%20fieldvalue:" + searchTerm, getJsonSearchToTicketFn());
+  }
+
   public User getUserById(final int userId) throws ZendeskException {
     return get("/api/v2/users/" + userId + ".json", new Function<String, User>() {
       @Override public User apply(final String result) {
         return gson.fromJson(result, UserContainer.class).getUser();
       }
     });
-  }
-
-  private Function<String, Set<Ticket>> jsonToSetFn;
-  private Function<String, Set<Ticket>> getJsonToSetFn() {
-    if (jsonToSetFn == null) {
-      jsonToSetFn = new Function<String, Set<Ticket>>() {
-        @Override public Set<Ticket> apply(final String result) {
-          return gson.fromJson(result, TicketSetContainer.class).getTickets();
-        }
-      };
-    }
-    return jsonToSetFn;
   }
 
   public Set<Ticket> getRecentTickets() throws ZendeskException {
@@ -101,7 +123,7 @@ public class ZendeskApi {
   public Set<Ticket> getTicketsById(Collection<Integer> ticketIds) throws ZendeskException {
     return get("/api/v2/tickets/show_many.json?ids=" + commaJoiner.join(ticketIds), getJsonToSetFn());
   }
-  
+
   public TicketFieldSpec getTicketFieldById(final int ticketFieldId) throws ZendeskException {
     return get("/api/v2/ticket_fields/" + ticketFieldId + ".json", new Function<String, TicketFieldSpec>() {
       @Override public TicketFieldSpec apply(final String result) {
@@ -221,6 +243,17 @@ class TicketContainer {
   }
   Ticket getTicket() {
     return ticket;
+  }
+}
+
+class TicketSearchResult {
+  private List<Ticket> results;
+  private Integer count;
+  Ticket getTicket() {
+    if (count != null && count > 0) {
+      return results.get(0);
+    }
+    return null;
   }
 }
 

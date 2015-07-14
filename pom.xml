@@ -5,7 +5,7 @@
   <groupId>com.taxis99</groupId>
   <artifactId>zendesk-java-api</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.6</version>
+  <version>1.1.0</version>
 
   <name>zendesk-java-api</name>
   <url>https://github.com/99taxis/zendesk-java-api</url>
