@@ -23,9 +23,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public class ZendeskApi {
+
   private static final Logger logger = LoggerFactory.getLogger(ZendeskApi.class);
 
   private final Gson gson;
@@ -34,7 +36,8 @@ public class ZendeskApi {
   private final String zendeskHost;
   private final int connTimeout;
 
-  @Inject public ZendeskApi(final Gson gson, @Named("Authorized") final ZendeskConfig config) {
+  @Inject
+  public ZendeskApi(final Gson gson, @Named("Authorized") final ZendeskConfig config) {
     this.gson = gson;
     this.authEncoded = new String(Base64.encodeBase64(config.getAuth().getBytes()), StandardCharsets.US_ASCII);
     this.zendeskHost = "https://" + config.getSubdomain() + ".zendesk.com";
@@ -42,15 +45,46 @@ public class ZendeskApi {
   }
 
   private Function<String, Ticket> jsonToTicketFn;
+
   private Function<String, Ticket> getJsonToTicketFn() {
     if (jsonToTicketFn == null) {
       jsonToTicketFn = new Function<String, Ticket>() {
-        @Override public Ticket apply(final String result) {
+        @Override
+        public Ticket apply(final String result) {
           return gson.fromJson(result, TicketContainer.class).getTicket();
         }
       };
     }
     return jsonToTicketFn;
+  }
+
+  private Function<String, Set<Ticket>> jsonToSetFn;
+
+  private Function<String, Set<Ticket>> getJsonToSetFn() {
+    if (jsonToSetFn == null) {
+      jsonToSetFn = new Function<String, Set<Ticket>>() {
+        @Override
+        public Set<Ticket> apply(final String result) {
+          return gson.fromJson(result, TicketSetContainer.class).getTickets();
+        }
+      };
+    }
+    return jsonToSetFn;
+  }
+
+
+  private Function<String, Ticket> jsonSearchToTicketFn;
+
+  private Function<String, Ticket> getJsonSearchToTicketFn() {
+    if (jsonSearchToTicketFn == null) {
+      jsonSearchToTicketFn = new Function<String, Ticket>() {
+        @Override
+        public Ticket apply(final String result) {
+          return gson.fromJson(result, TicketSearchResult.class).getTicket();
+        }
+      };
+    }
+    return jsonSearchToTicketFn;
   }
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
@@ -65,31 +99,24 @@ public class ZendeskApi {
       throw new IllegalArgumentException("Cannot update ticket without previously set id");
     }
     return put(String.format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
-        getJsonToTicketFn());
+               getJsonToTicketFn());
   }
 
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
     return get("/api/v2/tickets/" + ticketId + ".json", getJsonToTicketFn());
   }
-  
+
+  public Ticket getTicketByCustomField(final String searchTerm) throws ZendeskException {
+    return get("/api/v2/search.json?query=type:ticket%20fieldvalue:" + searchTerm, getJsonSearchToTicketFn());
+  }
+
   public User getUserById(final int userId) throws ZendeskException {
     return get("/api/v2/users/" + userId + ".json", new Function<String, User>() {
-      @Override public User apply(final String result) {
+      @Override
+      public User apply(final String result) {
         return gson.fromJson(result, UserContainer.class).getUser();
       }
     });
-  }
-
-  private Function<String, Set<Ticket>> jsonToSetFn;
-  private Function<String, Set<Ticket>> getJsonToSetFn() {
-    if (jsonToSetFn == null) {
-      jsonToSetFn = new Function<String, Set<Ticket>>() {
-        @Override public Set<Ticket> apply(final String result) {
-          return gson.fromJson(result, TicketSetContainer.class).getTickets();
-        }
-      };
-    }
-    return jsonToSetFn;
   }
 
   public Set<Ticket> getRecentTickets() throws ZendeskException {
@@ -101,10 +128,11 @@ public class ZendeskApi {
   public Set<Ticket> getTicketsById(Collection<Integer> ticketIds) throws ZendeskException {
     return get("/api/v2/tickets/show_many.json?ids=" + commaJoiner.join(ticketIds), getJsonToSetFn());
   }
-  
+
   public TicketFieldSpec getTicketFieldById(final int ticketFieldId) throws ZendeskException {
     return get("/api/v2/ticket_fields/" + ticketFieldId + ".json", new Function<String, TicketFieldSpec>() {
-      @Override public TicketFieldSpec apply(final String result) {
+      @Override
+      public TicketFieldSpec apply(final String result) {
         return gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
       }
     });
@@ -122,14 +150,14 @@ public class ZendeskApi {
   private String get(String apiStr) throws ZendeskException {
     try {
       final Request request = Request
-        .Get(zendeskHost + apiStr)
-        .addHeader("Content-Type", "application/json")
-        .addHeader("Authorization", "Basic " + authEncoded)
-        .connectTimeout(connTimeout);
+          .Get(zendeskHost + apiStr)
+          .addHeader("Content-Type", "application/json")
+          .addHeader("Authorization", "Basic " + authEncoded)
+          .connectTimeout(connTimeout);
       try {
         HttpResponse response = request
-          .execute()
-          .returnResponse();
+            .execute()
+            .returnResponse();
         String result = EntityUtils.toString(response.getEntity());
         logger.debug(result);
         return result;
@@ -149,15 +177,15 @@ public class ZendeskApi {
   private String post(String apiStr, String ticketStr) throws ZendeskException {
     try {
       final Request request = Request
-        .Post(zendeskHost + apiStr)
-        .addHeader("Content-Type", "application/json")
-        .addHeader("Authorization", "Basic " + authEncoded)
-        .body(new StringEntity(ticketStr, StandardCharsets.UTF_8))
-        .connectTimeout(connTimeout);
+          .Post(zendeskHost + apiStr)
+          .addHeader("Content-Type", "application/json")
+          .addHeader("Authorization", "Basic " + authEncoded)
+          .body(new StringEntity(ticketStr, StandardCharsets.UTF_8))
+          .connectTimeout(connTimeout);
       try {
-  	    HttpResponse response = request
-          .execute()
-          .returnResponse();
+        HttpResponse response = request
+            .execute()
+            .returnResponse();
         String result = EntityUtils.toString(response.getEntity());
         logger.debug(result);
         return result;
@@ -177,15 +205,15 @@ public class ZendeskApi {
   private String put(String apiStr, String ticketStr) throws ZendeskException {
     try {
       final Request request = Request
-        .Put(zendeskHost + apiStr)
-        .addHeader("Content-Type", "application/json")
-        .addHeader("Authorization", "Basic " + authEncoded)
-        .body(new StringEntity(ticketStr, StandardCharsets.UTF_8))
-        .connectTimeout(connTimeout);
+          .Put(zendeskHost + apiStr)
+          .addHeader("Content-Type", "application/json")
+          .addHeader("Authorization", "Basic " + authEncoded)
+          .body(new StringEntity(ticketStr, StandardCharsets.UTF_8))
+          .connectTimeout(connTimeout);
       try {
         HttpResponse response = request
-          .execute()
-          .returnResponse();
+            .execute()
+            .returnResponse();
         String result = EntityUtils.toString(response.getEntity());
         logger.debug(result);
         return result;
@@ -205,34 +233,57 @@ public class ZendeskApi {
 }
 
 class UserContainer {
+
   private User user;
+
   public UserContainer(User user) {
     this.user = user;
   }
+
   User getUser() {
     return user;
   }
 }
 
 class TicketContainer {
+
   private Ticket ticket;
+
   public TicketContainer(Ticket ticket) {
     this.ticket = ticket;
   }
+
   Ticket getTicket() {
     return ticket;
   }
 }
 
+class TicketSearchResult {
+
+  private List<Ticket> results;
+  private Integer count;
+
+  Ticket getTicket() {
+    if (count != null && count > 0) {
+      return results.get(0);
+    }
+    return null;
+  }
+}
+
 class TicketSetContainer {
+
   private Set<Ticket> tickets;
+
   Set<Ticket> getTickets() {
     return tickets;
   }
 }
 
 class TicketFieldSpecContainer {
+
   private TicketFieldSpec ticketField;
+
   public TicketFieldSpec getTicketFieldSpec() {
     return ticketField;
   }
