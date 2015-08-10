@@ -95,7 +95,7 @@ public class ZendeskApi {
       throw new IllegalArgumentException("Cannot update ticket without previously set id");
     }
     return put(String.format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
-        getJsonToTicketFn());
+               getJsonToTicketFn());
   }
 
   public Ticket getTicketById(final int ticketId) throws ZendeskException {
@@ -110,6 +110,14 @@ public class ZendeskApi {
     return get("/api/v2/users/" + userId + ".json", new Function<String, User>() {
       @Override public User apply(final String result) {
         return gson.fromJson(result, UserContainer.class).getUser();
+      }
+    });
+  }
+
+  public User getUserByEmail(final String email) throws ZendeskException {
+    return get("/api/v2/users/search.json?query=" + email + ".json", new Function<String, User>() {
+      @Override public User apply(final String result) {
+        return gson.fromJson(result, UserSearchResult.class).getUser();
       }
     });
   }
@@ -250,6 +258,16 @@ class TicketSearchResult {
   private List<Ticket> results;
   private Integer count;
   Ticket getTicket() {
+    if (count != null && count > 0) {
+      return results.get(0);
+    }
+    return null;
+  }
+}
+class UserSearchResult {
+  private List<User> results;
+  private Integer count;
+  User getUser() {
     if (count != null && count > 0) {
       return results.get(0);
     }

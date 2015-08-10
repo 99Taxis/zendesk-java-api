@@ -11,7 +11,7 @@ public class User {
   /**
    * Automatically assigned when creating users
    */
-  @Nullable Integer getId() {
+  @Nullable public Integer getId() {
     return id;
   }
 
