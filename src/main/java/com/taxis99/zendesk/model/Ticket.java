@@ -17,19 +17,19 @@ import com.taxis99.zendesk.config.GsonInstanceHolder;
  */
 public class Ticket implements Comparable<Ticket> {
 
-  Integer requesterId;
+  Long requesterId;
 
   /**
    * The numeric ID of the user asking for support through the ticket.
    */
-  public Integer getRequesterId() {
+  public Long getRequesterId() {
     return requesterId;
   }
 
   /**
    * The numeric ID of the user asking for support through the ticket.
    */
-  public void setRequesterId(Integer requesterId) {
+  public void setRequesterId(Long requesterId) {
     this.requesterId = requesterId;
   }
 
