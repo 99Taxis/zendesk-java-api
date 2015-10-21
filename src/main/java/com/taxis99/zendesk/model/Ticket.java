@@ -33,19 +33,19 @@ public class Ticket implements Comparable<Ticket> {
     this.requesterId = requesterId;
   }
 
-  Integer id;
+  Long id;
 
   /**
    * The Zendesk ticket id, automatically assigned when creating tickets
    */
-  @Nullable public Integer getId() {
+  @Nullable public Long getId() {
     return id;
   }
 
   /**
    * The Zendesk ticket id, automatically assigned when creating tickets
    */
-  public void setId(Integer id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -100,19 +100,19 @@ public class Ticket implements Comparable<Ticket> {
   }
 
 
-  Integer assigneeId;
+  Long assigneeId;
 
   /**
    * What agent is currently assigned to the ticket
    */
-  @Nullable public Integer getAssigneeId() {
+  @Nullable public Long getAssigneeId() {
     return assigneeId;
   }
 
   /**
    * What agent is going to be assigned to the ticket
    */
-  public void setAssigneeId(Integer assigneeId) {
+  public void setAssigneeId(Long assigneeId) {
     this.assigneeId = assigneeId;
   }
 
@@ -316,7 +316,13 @@ public class Ticket implements Comparable<Ticket> {
         throw new IllegalStateException("Cannot change state after build");
       }
     }
-    public TicketBuilder setTicketId(int ticketId) {
+    @Deprecated
+    public TicketBuilder setTicketId(Long ticketId) {
+      checkState();
+      instance.setId(ticketId);
+      return this;
+    }
+    public TicketBuilder withTicketId(Long ticketId) {
       checkState();
       instance.setId(ticketId);
       return this;
@@ -341,7 +347,13 @@ public class Ticket implements Comparable<Ticket> {
       instance.setRequester(new TicketRequester(name, email));
       return this;
     }
-    public TicketBuilder setAssigneeId(int assigneeId) {
+    @Deprecated
+    public TicketBuilder setAssigneeId(Long assigneeId) {
+      checkState();
+      instance.setAssigneeId(assigneeId);
+      return this;
+    }
+    public TicketBuilder withAssigneeId(Long assigneeId) {
       checkState();
       instance.setAssigneeId(assigneeId);
       return this;
