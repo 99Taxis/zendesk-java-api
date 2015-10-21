@@ -98,7 +98,7 @@ public class ZendeskApi {
         getJsonToTicketFn());
   }
 
-  public Ticket getTicketById(final int ticketId) throws ZendeskException {
+  public Ticket getTicketById(final Long ticketId) throws ZendeskException {
     return get("/api/v2/tickets/" + ticketId + ".json", getJsonToTicketFn());
   }
 
@@ -106,7 +106,7 @@ public class ZendeskApi {
     return get("/api/v2/search.json?query=type:ticket%20fieldvalue:" + searchTerm, getJsonSearchToTicketFn());
   }
 
-  public User getUserById(final int userId) throws ZendeskException {
+  public User getUserById(final Long userId) throws ZendeskException {
     return get("/api/v2/users/" + userId + ".json", new Function<String, User>() {
       @Override public User apply(final String result) {
         return gson.fromJson(result, UserContainer.class).getUser();
@@ -120,7 +120,7 @@ public class ZendeskApi {
 
   private static Joiner commaJoiner = Joiner.on(",").skipNulls();
 
-  public Set<Ticket> getTicketsById(Collection<Integer> ticketIds) throws ZendeskException {
+  public Set<Ticket> getTicketsById(Collection<Long> ticketIds) throws ZendeskException {
     return get("/api/v2/tickets/show_many.json?ids=" + commaJoiner.join(ticketIds), getJsonToSetFn());
   }
 
@@ -132,9 +132,9 @@ public class ZendeskApi {
     });
   }
 
-  public int getAssigneeId(final String email) {
+  public Long getAssigneeId(final String email) {
     // TODO implement this
-    return 0;
+    return 0L;
   }
 
   private <E> E get(String apiStr, Function<String, E> fn) throws ZendeskException {
