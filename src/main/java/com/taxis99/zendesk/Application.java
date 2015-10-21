@@ -39,7 +39,7 @@ class ZendeskExampleApp {
 
   void printTicket() {
     try {
-      Ticket ticket = zendeskApi.getTicketById(1);
+      Ticket ticket = zendeskApi.getTicketById(1L);
       System.out.println(gson.toJson(ticket));
     } catch (ZendeskException e) {
       e.printStackTrace();
