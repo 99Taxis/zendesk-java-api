@@ -6,12 +6,12 @@ import javax.annotation.Nullable;
 
 public class User {
 
-  Integer id;
+  Long id;
 
   /**
    * Automatically assigned when creating users
    */
-  @Nullable Integer getId() {
+  @Nullable Long getId() {
     return id;
   }
 

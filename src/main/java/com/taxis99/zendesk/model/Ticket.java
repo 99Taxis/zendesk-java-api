@@ -163,21 +163,20 @@ public class Ticket implements Comparable<Ticket> {
   public void setPriority(TicketPriority priority) {
     this.priority = priority;
   }
-  
 
-  Integer problemId;
+  Long problemId;
 
   /**
    * The problem this incident is linked to, if any
    */
-  @Nullable public Integer getProblemId() {
+  @Nullable public Long getProblemId() {
     return problemId;
   }
 
   /**
    * The problem this incident will be linked to
    */
-  public void setProblemId(Integer problemId) {
+  public void setProblemId(Long problemId) {
     this.problemId = problemId;
   }
 

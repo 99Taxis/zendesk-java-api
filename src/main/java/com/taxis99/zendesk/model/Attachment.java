@@ -4,14 +4,14 @@ import java.util.List;
 
 public class Attachment {
 
-  Integer id;
+  Long id;
 
   /**
    * Automatically assigned when created
    * 
    * @return The ID
    */
-  public Integer getId() {
+  public Long getId() {
     return id;
   }
 
@@ -46,14 +46,14 @@ public class Attachment {
     return contentType;
   }
 
-  Integer size;
+  Long size;
 
   /**
    * The size of the file in bytes
    * 
    * @return the size in bytes
    */
-  public Integer getSize() {
+  public Long getSize() {
     return size;
   }
 
