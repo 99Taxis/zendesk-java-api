@@ -359,11 +359,17 @@ public class Ticket implements Comparable<Ticket> {
       instance.setComment(new TicketComment(true, commentBody));
       return this;
     }
+    public TicketBuilder withExternalId(String externalId) {
+      checkState();
+      instance.setExternalId(externalId);
+      return this;
+    }
     public TicketBuilder byRequester(String name, String email) {
       checkState();
       instance.setRequester(new TicketRequester(name, email));
       return this;
     }
+
     @Deprecated
     public TicketBuilder setAssigneeId(Long assigneeId) {
       checkState();

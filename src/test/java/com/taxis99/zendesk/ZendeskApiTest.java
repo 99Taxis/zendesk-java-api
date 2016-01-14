@@ -54,14 +54,34 @@ public class ZendeskApiTest {
   }
 
   @Test
-  public void testGetTicketByCustomField() throws ZendeskException{
+  public void testGetTicketByCustomField() throws ZendeskException {
     String customValue = "1515125";
     final Ticket ticketByCustomField = zendeskApi.getTicketByCustomField(customValue);
     assertEquals("testGetTicketByCustomField", ticketByCustomField.getSubject());
   }
 
   @Test
-  public void testGetUserById() throws ZendeskException{
+  public void testGetTicketByCustomFieldWithNullResult() throws ZendeskException {
+    String customValue = "whatever";
+    final Ticket ticketByCustomField = zendeskApi.getTicketByCustomField(customValue);
+    assertNull(ticketByCustomField);
+  }
+
+  @Test
+  public void testGetTicketByExternalId() throws ZendeskException, InterruptedException {
+    final Ticket ticketByExternalId = zendeskApi.getTicketByExternalId("unitTest74");
+    assertNotNull(ticketByExternalId);
+    assertEquals("testGetTicketByExternalId", ticketByExternalId.getSubject());
+  }
+
+  @Test
+  public void testGetTicketByExternalIdWithNullResult() throws ZendeskException, InterruptedException {
+    final Ticket ticketByExternalId = zendeskApi.getTicketByExternalId("whatever");
+    assertNull(ticketByExternalId);
+  }
+
+  @Test
+  public void testGetUserById() throws ZendeskException {
     final User userById = zendeskApi.getUserById(4081484028L);
     assertNotNull(userById);
     assertEquals("Pedro Somma", userById.getName());

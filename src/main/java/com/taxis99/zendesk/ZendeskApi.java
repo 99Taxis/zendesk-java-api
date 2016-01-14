@@ -7,6 +7,7 @@ import com.taxis99.zendesk.model.Ticket;
 import com.taxis99.zendesk.model.TicketFieldSpec;
 import com.taxis99.zendesk.model.User;
 
+import java.util.Optional;
 import java.util.function.Function;
 import com.google.common.base.Joiner;
 import com.google.gson.Gson;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -50,8 +52,9 @@ public class ZendeskApi {
   final private Function<String, Ticket> parseJsonToTicket                   = result -> gson.fromJson(result, TicketContainer.class).getTicket();
   final private Function<String, Set<Ticket>> parseJsonToTicketSet           = result -> gson.fromJson(result, TicketSetContainer.class).getTickets();
   final private Function<String, Ticket> parseJsonSearchToTicket             = result -> gson.fromJson(result, TicketSearchResult.class).getTicket();
-  final private Function<String, TicketFieldSpec> parseJsonToTicketFieldSpec = result -> gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
   final private Function<String, User> parseJsonToUser                       = result -> gson.fromJson(result, UserContainer.class).getUser();
+  final private Function<String, TicketFieldSpec> parseJsonToTicketFieldSpec = result ->
+    Optional.ofNullable(gson.fromJson(result, TicketFieldSpecContainer.class)).map(TicketFieldSpecContainer::getTicketFieldSpec).orElseGet(null);
 
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
@@ -61,7 +64,7 @@ public class ZendeskApi {
 
   public Ticket updateTicket(Ticket ticket) throws ZendeskException {
     Preconditions.checkArgument(ticket.getId() != null, "Cannot update ticket without previously set id");
-    return put(String.format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
+    return put(format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
       parseJsonToTicket);
   }
 
@@ -69,8 +72,12 @@ public class ZendeskApi {
     return get(format("/api/v2/tickets/%d.json",ticketId), parseJsonToTicket);
   }
 
-  public Ticket getTicketByCustomField(final String searchTerm) throws ZendeskException {
+  @Nullable public Ticket getTicketByCustomField(final String searchTerm) throws ZendeskException {
     return get(format("/api/v2/search.json?query=type:ticket%%20fieldvalue:%s", searchTerm), parseJsonSearchToTicket);
+  }
+
+  @Nullable public Ticket getTicketByExternalId(final String externalId) throws ZendeskException {
+    return get(format("/api/v2/search.json?query=type:ticket%%20external_id:%s", externalId), parseJsonSearchToTicket);
   }
 
   public User getUserById(final Long userId) throws ZendeskException {
