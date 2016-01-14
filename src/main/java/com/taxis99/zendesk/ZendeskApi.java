@@ -1,18 +1,17 @@
 package com.taxis99.zendesk;
 
-import com.google.common.base.Preconditions;
-import com.taxis99.zendesk.config.ZendeskConfig;
-import com.taxis99.zendesk.exceptions.ZendeskException;
-import com.taxis99.zendesk.model.Ticket;
-import com.taxis99.zendesk.model.TicketFieldSpec;
-import com.taxis99.zendesk.model.User;
+import static java.lang.String.format;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
-import com.google.common.base.Joiner;
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
@@ -22,15 +21,16 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import static java.lang.String.format;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.taxis99.zendesk.config.ZendeskConfig;
+import com.taxis99.zendesk.exceptions.ZendeskException;
+import com.taxis99.zendesk.model.Ticket;
+import com.taxis99.zendesk.model.TicketFieldSpec;
+import com.taxis99.zendesk.model.User;
 
 public class ZendeskApi {
 

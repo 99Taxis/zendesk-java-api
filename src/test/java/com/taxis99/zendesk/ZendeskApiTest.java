@@ -1,5 +1,12 @@
 package com.taxis99.zendesk;
 
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+import java.util.Set;
+
+import org.junit.Test;
+
 import com.google.gson.Gson;
 import com.taxis99.zendesk.config.GsonInstanceHolder;
 import com.taxis99.zendesk.config.ZendeskConfigFromProperties;
@@ -7,12 +14,6 @@ import com.taxis99.zendesk.exceptions.ZendeskException;
 import com.taxis99.zendesk.model.Ticket;
 import com.taxis99.zendesk.model.TicketFieldSpec;
 import com.taxis99.zendesk.model.User;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 public class ZendeskApiTest {
   private final ZendeskApi zendeskApi;
