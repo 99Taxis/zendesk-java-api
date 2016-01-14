@@ -20,5 +20,4 @@ Thumbs.db
 # Zendesk config file
 zendesk.properties
 
-!src/test/resources/zendesk.properties
 
