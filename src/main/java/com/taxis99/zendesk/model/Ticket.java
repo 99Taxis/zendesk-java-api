@@ -11,8 +11,6 @@ import com.taxis99.zendesk.config.GsonInstanceHolder;
 
 /**
  * http://developer.zendesk.com/documentation/rest_api/tickets.html#json-format
- * 
- * @author miguel
  *
  */
 public class Ticket implements Comparable<Ticket> {
