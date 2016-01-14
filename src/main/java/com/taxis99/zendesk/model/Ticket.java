@@ -90,6 +90,19 @@ public class Ticket implements Comparable<Ticket> {
     this.subject = subject;
   }
 
+
+
+  String description;
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+
   TicketVia via;
 
   /**
@@ -329,6 +342,11 @@ public class Ticket implements Comparable<Ticket> {
     public TicketBuilder withSubject(String subject) {
       checkState();
       instance.setSubject(subject);
+      return this;
+    }
+    public TicketBuilder withDescription(String description) {
+      checkState();
+      instance.setDescription(description);
       return this;
     }
     public TicketBuilder withComment(String commentBody) {

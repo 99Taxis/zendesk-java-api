@@ -1,12 +1,13 @@
 package com.taxis99.zendesk;
 
+import com.google.common.base.Preconditions;
 import com.taxis99.zendesk.config.ZendeskConfig;
 import com.taxis99.zendesk.exceptions.ZendeskException;
 import com.taxis99.zendesk.model.Ticket;
 import com.taxis99.zendesk.model.TicketFieldSpec;
 import com.taxis99.zendesk.model.User;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
@@ -20,121 +21,73 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.String.format;
+
 public class ZendeskApi {
+
   private static final Logger logger = LoggerFactory.getLogger(ZendeskApi.class);
 
-  private final Gson gson;
+  private Gson gson;
 
   private final String authEncoded;
   private final String zendeskHost;
   private final int connTimeout;
 
-  @Inject public ZendeskApi(final Gson gson, @Named("Authorized") final ZendeskConfig config) {
+  @Inject public ZendeskApi(@Nonnull Gson gson, @Named("Authorized") final ZendeskConfig config) {
     this.gson = gson;
     this.authEncoded = new String(Base64.encodeBase64(config.getAuth().getBytes()), StandardCharsets.US_ASCII);
-    this.zendeskHost = "https://" + config.getSubdomain() + ".zendesk.com";
+    this.zendeskHost = format("https://%s.zendesk.com", config.getSubdomain());
     this.connTimeout = config.getConnTimeout();
   }
 
-  private Function<String, Ticket> jsonToTicketFn;
-  private Function<String, Ticket> getJsonToTicketFn() {
-    if (jsonToTicketFn == null) {
-      jsonToTicketFn = new Function<String, Ticket>() {
-        @Override public Ticket apply(final String result) {
-          return gson.fromJson(result, TicketContainer.class).getTicket();
-        }
-      };
-    }
-    return jsonToTicketFn;
-  }
+  final private Function<String, Ticket> parseJsonToTicket                   = result -> gson.fromJson(result, TicketContainer.class).getTicket();
+  final private Function<String, Set<Ticket>> parseJsonToTicketSet           = result -> gson.fromJson(result, TicketSetContainer.class).getTickets();
+  final private Function<String, Ticket> parseJsonSearchToTicket             = result -> gson.fromJson(result, TicketSearchResult.class).getTicket();
+  final private Function<String, TicketFieldSpec> parseJsonToTicketFieldSpec = result -> gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
+  final private Function<String, User> parseJsonToUser                       = result -> gson.fromJson(result, UserContainer.class).getUser();
 
-  private Function<String, Set<Ticket>> jsonToSetFn;
-
-  private Function<String, Set<Ticket>> getJsonToSetFn() {
-    if (jsonToSetFn == null) {
-      jsonToSetFn = new Function<String, Set<Ticket>>() {
-        @Override
-        public Set<Ticket> apply(final String result) {
-          return gson.fromJson(result, TicketSetContainer.class).getTickets();
-        }
-      };
-    }
-    return jsonToSetFn;
-  }
-
-
-  private Function<String, Ticket> jsonSearchToTicketFn;
-
-  private Function<String, Ticket> getJsonSearchToTicketFn() {
-    if (jsonSearchToTicketFn == null) {
-      jsonSearchToTicketFn = new Function<String, Ticket>() {
-        @Override
-        public Ticket apply(final String result) {
-          return gson.fromJson(result, TicketSearchResult.class).getTicket();
-        }
-      };
-    }
-    return jsonSearchToTicketFn;
-  }
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
-    if (ticket.getId() != null) {
-      throw new IllegalArgumentException("Cannot create ticket with previously set id");
-    }
-    return post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)), getJsonToTicketFn());
+    Preconditions.checkArgument(ticket.getId() == null, "Cannot create ticket with previously set id");
+    return post("/api/v2/tickets.json", gson.toJson(new TicketContainer(ticket)), parseJsonToTicket);
   }
 
   public Ticket updateTicket(Ticket ticket) throws ZendeskException {
-    if (ticket.getId() == null) {
-      throw new IllegalArgumentException("Cannot update ticket without previously set id");
-    }
+    Preconditions.checkArgument(ticket.getId() != null, "Cannot update ticket without previously set id");
     return put(String.format("/api/v2/tickets/%d.json", ticket.getId()), gson.toJson(new TicketContainer(ticket)),
-        getJsonToTicketFn());
+      parseJsonToTicket);
   }
 
   public Ticket getTicketById(final Long ticketId) throws ZendeskException {
-    return get("/api/v2/tickets/" + ticketId + ".json", getJsonToTicketFn());
+    return get(format("/api/v2/tickets/%d.json",ticketId), parseJsonToTicket);
   }
 
   public Ticket getTicketByCustomField(final String searchTerm) throws ZendeskException {
-    return get("/api/v2/search.json?query=type:ticket%20fieldvalue:" + searchTerm, getJsonSearchToTicketFn());
+    return get(format("/api/v2/search.json?query=type:ticket%%20fieldvalue:%s", searchTerm), parseJsonSearchToTicket);
   }
 
   public User getUserById(final Long userId) throws ZendeskException {
-    return get("/api/v2/users/" + userId + ".json", new Function<String, User>() {
-      @Override public User apply(final String result) {
-        return gson.fromJson(result, UserContainer.class).getUser();
-      }
-    });
+    return get(format("/api/v2/users/%s.json", userId), parseJsonToUser);
   }
 
   public Set<Ticket> getRecentTickets() throws ZendeskException {
-    return get("/api/v2/tickets/recent.json", getJsonToSetFn());
+    return get("/api/v2/tickets/recent.json", parseJsonToTicketSet);
   }
 
-  private static Joiner commaJoiner = Joiner.on(",").skipNulls();
-
   public Set<Ticket> getTicketsById(Collection<Long> ticketIds) throws ZendeskException {
-    return get("/api/v2/tickets/show_many.json?ids=" + commaJoiner.join(ticketIds), getJsonToSetFn());
+    Joiner commaJoiner = Joiner.on(",").skipNulls();
+    return get(format("/api/v2/tickets/show_many.json?ids=%s",commaJoiner.join(ticketIds)), parseJsonToTicketSet);
   }
 
   public TicketFieldSpec getTicketFieldById(final int ticketFieldId) throws ZendeskException {
-    return get("/api/v2/ticket_fields/" + ticketFieldId + ".json", new Function<String, TicketFieldSpec>() {
-      @Override public TicketFieldSpec apply(final String result) {
-        return gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
-      }
-    });
-  }
-
-  public Long getAssigneeId(final String email) {
-    // TODO implement this
-    return 0L;
+    return get(format("/api/v2/ticket_fields/%d.json", ticketFieldId), parseJsonToTicketFieldSpec);
   }
 
   private <E> E get(String apiStr, Function<String, E> fn) throws ZendeskException {

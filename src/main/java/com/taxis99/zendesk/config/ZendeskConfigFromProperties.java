@@ -11,7 +11,7 @@ public class ZendeskConfigFromProperties implements ZendeskConfig {
   private final String authToken;
   private final int connTimeout;
 
-  ZendeskConfigFromProperties() {
+  public ZendeskConfigFromProperties() {
     try (InputStream resource = ZendeskConfigFromProperties.class.getResourceAsStream("/zendesk.properties")) {
       final Properties properties = new Properties();
       properties.load(resource);
