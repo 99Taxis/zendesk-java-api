@@ -326,12 +326,6 @@ public class Ticket implements Comparable<Ticket> {
         throw new IllegalStateException("Cannot change state after build");
       }
     }
-    @Deprecated
-    public TicketBuilder setTicketId(Long ticketId) {
-      checkState();
-      instance.setId(ticketId);
-      return this;
-    }
     public TicketBuilder withTicketId(Long ticketId) {
       checkState();
       instance.setId(ticketId);
@@ -365,13 +359,6 @@ public class Ticket implements Comparable<Ticket> {
     public TicketBuilder byRequester(String name, String email) {
       checkState();
       instance.setRequester(new TicketRequester(name, email));
-      return this;
-    }
-
-    @Deprecated
-    public TicketBuilder setAssigneeId(Long assigneeId) {
-      checkState();
-      instance.setAssigneeId(assigneeId);
       return this;
     }
     public TicketBuilder withAssigneeId(Long assigneeId) {
