@@ -55,29 +55,33 @@ public class ZendeskApiTest {
   }
 
   @Test
-  public void testGetTicketByCustomField() throws ZendeskException {
+  public void testFindTicketByFieldValue() throws ZendeskException {
     String customValue = "1515125";
-    final Ticket ticketByCustomField = zendeskApi.getTicketByCustomField(customValue);
-    assertEquals("testGetTicketByCustomField", ticketByCustomField.getSubject());
+    final Ticket ticketByFieldValue = zendeskApi.findTicketByFieldValue(customValue);
+    assertEquals(1, ticketByFieldValue.getCustomFields().stream()
+      .filter(field -> field.getValue() != null)
+      .map(field -> field.getValue())
+      .filter(fieldValue -> fieldValue.equalsIgnoreCase(customValue))
+      .count());
   }
 
   @Test
-  public void testGetTicketByCustomFieldWithNullResult() throws ZendeskException {
-    String customValue = "whatever";
-    final Ticket ticketByCustomField = zendeskApi.getTicketByCustomField(customValue);
-    assertNull(ticketByCustomField);
+  public void testFindTicketByFieldValueWithNullResult() throws ZendeskException {
+    String fieldValue = "whatever";
+    final Ticket ticketByFieldValue = zendeskApi.findTicketByFieldValue(fieldValue);
+    assertNull(ticketByFieldValue);
   }
 
   @Test
-  public void testGetTicketByExternalId() throws ZendeskException, InterruptedException {
-    final Ticket ticketByExternalId = zendeskApi.getTicketByExternalId("unitTest74");
+  public void testFindTicketByExternalId() throws ZendeskException, InterruptedException {
+    final Ticket ticketByExternalId = zendeskApi.findTicketByExternalId("unitTest74");
     assertNotNull(ticketByExternalId);
     assertEquals("testGetTicketByExternalId", ticketByExternalId.getSubject());
   }
 
   @Test
   public void testGetTicketByExternalIdWithNullResult() throws ZendeskException, InterruptedException {
-    final Ticket ticketByExternalId = zendeskApi.getTicketByExternalId("whatever");
+    final Ticket ticketByExternalId = zendeskApi.findTicketByExternalId("whatever");
     assertNull(ticketByExternalId);
   }
 

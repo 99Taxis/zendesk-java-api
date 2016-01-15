@@ -72,11 +72,11 @@ public class ZendeskApi {
     return get(format("/api/v2/tickets/%d.json",ticketId), parseJsonToTicket);
   }
 
-  @Nullable public Ticket getTicketByCustomField(final String searchTerm) throws ZendeskException {
+  @Nullable public Ticket findTicketByFieldValue(final String searchTerm) throws ZendeskException {
     return get(format("/api/v2/search.json?query=type:ticket%%20fieldvalue:%s", searchTerm), parseJsonSearchToTicket);
   }
 
-  @Nullable public Ticket getTicketByExternalId(final String externalId) throws ZendeskException {
+  @Nullable public Ticket findTicketByExternalId(final String externalId) throws ZendeskException {
     return get(format("/api/v2/search.json?query=type:ticket%%20external_id:%s", externalId), parseJsonSearchToTicket);
   }
 
