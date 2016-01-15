@@ -3,6 +3,7 @@ package com.taxis99.zendesk;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class ZendeskApiTest {
   @Test
   public void testFindTicketByFieldValue() throws ZendeskException {
     String customValue = "1515125";
-    final Ticket ticketByFieldValue = zendeskApi.findTicketByFieldValue(customValue);
+    final Ticket ticketByFieldValue = zendeskApi.findTicketByFieldValue(customValue).get();
     assertEquals(1, ticketByFieldValue.getCustomFields().stream()
       .filter(field -> field.getValue() != null)
       .map(field -> field.getValue())
@@ -68,21 +69,21 @@ public class ZendeskApiTest {
   @Test
   public void testFindTicketByFieldValueWithNullResult() throws ZendeskException {
     String fieldValue = "whatever";
-    final Ticket ticketByFieldValue = zendeskApi.findTicketByFieldValue(fieldValue);
-    assertNull(ticketByFieldValue);
+    final Optional<Ticket> ticketByFieldValue = zendeskApi.findTicketByFieldValue(fieldValue);
+    assertEquals(Optional.<Ticket> empty(), ticketByFieldValue);
   }
 
   @Test
   public void testFindTicketByExternalId() throws ZendeskException, InterruptedException {
-    final Ticket ticketByExternalId = zendeskApi.findTicketByExternalId("unitTest74");
-    assertNotNull(ticketByExternalId);
-    assertEquals("testGetTicketByExternalId", ticketByExternalId.getSubject());
+    final Optional<Ticket> ticketByExternalId = zendeskApi.findTicketByExternalId("unitTest74");
+    assertNotEquals(Optional.<Ticket> empty(), ticketByExternalId);
+    assertEquals("testGetTicketByExternalId", ticketByExternalId.get().getSubject());
   }
 
   @Test
   public void testGetTicketByExternalIdWithNullResult() throws ZendeskException, InterruptedException {
-    final Ticket ticketByExternalId = zendeskApi.findTicketByExternalId("whatever");
-    assertNull(ticketByExternalId);
+    final Optional<Ticket> ticketByExternalId = zendeskApi.findTicketByExternalId("whatever");
+    assertEquals(Optional.<Ticket> empty(), ticketByExternalId);
   }
 
   @Test

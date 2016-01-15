@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
@@ -51,10 +50,9 @@ public class ZendeskApi {
 
   final private Function<String, Ticket> parseJsonToTicket                   = result -> gson.fromJson(result, TicketContainer.class).getTicket();
   final private Function<String, Set<Ticket>> parseJsonToTicketSet           = result -> gson.fromJson(result, TicketSetContainer.class).getTickets();
-  final private Function<String, Ticket> parseJsonSearchToTicket             = result -> gson.fromJson(result, TicketSearchResult.class).getTicket();
+  final private Function<String, Optional<Ticket>> parseJsonSearchToTicket   = result -> gson.fromJson(result, TicketSearchResult.class).getFirstTicket();
   final private Function<String, User> parseJsonToUser                       = result -> gson.fromJson(result, UserContainer.class).getUser();
-  final private Function<String, TicketFieldSpec> parseJsonToTicketFieldSpec = result ->
-    Optional.ofNullable(gson.fromJson(result, TicketFieldSpecContainer.class)).map(TicketFieldSpecContainer::getTicketFieldSpec).orElseGet(null);
+  final private Function<String, TicketFieldSpec> parseJsonToTicketFieldSpec = result -> gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
 
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
@@ -72,11 +70,11 @@ public class ZendeskApi {
     return get(format("/api/v2/tickets/%d.json",ticketId), parseJsonToTicket);
   }
 
-  @Nullable public Ticket findTicketByFieldValue(final String searchTerm) throws ZendeskException {
+  public Optional<Ticket> findTicketByFieldValue(final String searchTerm) throws ZendeskException {
     return get(format("/api/v2/search.json?query=type:ticket%%20fieldvalue:%s", searchTerm), parseJsonSearchToTicket);
   }
 
-  @Nullable public Ticket findTicketByExternalId(final String externalId) throws ZendeskException {
+  public Optional<Ticket> findTicketByExternalId(final String externalId) throws ZendeskException {
     return get(format("/api/v2/search.json?query=type:ticket%%20external_id:%s", externalId), parseJsonSearchToTicket);
   }
 
@@ -90,7 +88,7 @@ public class ZendeskApi {
 
   public Set<Ticket> getTicketsById(Collection<Long> ticketIds) throws ZendeskException {
     Joiner commaJoiner = Joiner.on(",").skipNulls();
-    return get(format("/api/v2/tickets/show_many.json?ids=%s",commaJoiner.join(ticketIds)), parseJsonToTicketSet);
+    return get(format("/api/v2/tickets/show_many.json?ids=%s", commaJoiner.join(ticketIds)), parseJsonToTicketSet);
   }
 
   public TicketFieldSpec getTicketFieldById(final int ticketFieldId) throws ZendeskException {
@@ -181,7 +179,7 @@ public class ZendeskApi {
   }
 
   private static ZendeskException logException(String method, Exception e) {
-    logger.error("Unable to " + method + " Zendesk ticket" + e.getMessage());
+    logger.error("Unable to {} Zendesk ticket", method, e);
     return new ZendeskException("Unable to " + method + " Zendesk ticket", e);
   }
 }
@@ -209,11 +207,11 @@ class TicketContainer {
 class TicketSearchResult {
   private List<Ticket> results;
   private Integer count;
-  Ticket getTicket() {
+  Optional<Ticket> getFirstTicket() {
     if (count != null && count > 0) {
-      return results.get(0);
+      return Optional.of(results.get(0));
     }
-    return null;
+    return Optional.empty();
   }
 }
 
