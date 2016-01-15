@@ -10,8 +10,7 @@ Publishing to 99Taxis' Maven Public
     git push
     git tag vVERSION
     git push --tags
-    export JAVA_HOME=/usr/lib/jvm/java-7-oracle/
-    mvn javadoc:jar source:jar install -DupdateReleaseInfo=true -DcreateChecksum=true
+    mvn source:jar install -DupdateReleaseInfo=true -DcreateChecksum=true
 
     cd ../maven-public/
     cd releases/com/taxis99/zendesk-java-api/
