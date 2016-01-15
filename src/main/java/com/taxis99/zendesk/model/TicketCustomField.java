@@ -7,6 +7,7 @@ public class TicketCustomField {
   public int getId() {
     return id;
   }
+
   public String getValue() {
     return value;
   }

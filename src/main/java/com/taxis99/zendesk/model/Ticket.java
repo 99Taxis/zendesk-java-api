@@ -11,8 +11,6 @@ import com.taxis99.zendesk.config.GsonInstanceHolder;
 
 /**
  * http://developer.zendesk.com/documentation/rest_api/tickets.html#json-format
- * 
- * @author miguel
  *
  */
 public class Ticket implements Comparable<Ticket> {
@@ -89,6 +87,19 @@ public class Ticket implements Comparable<Ticket> {
   public void setSubject(String subject) {
     this.subject = subject;
   }
+
+
+
+  String description;
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
 
   TicketVia via;
 
@@ -315,12 +326,6 @@ public class Ticket implements Comparable<Ticket> {
         throw new IllegalStateException("Cannot change state after build");
       }
     }
-    @Deprecated
-    public TicketBuilder setTicketId(Long ticketId) {
-      checkState();
-      instance.setId(ticketId);
-      return this;
-    }
     public TicketBuilder withTicketId(Long ticketId) {
       checkState();
       instance.setId(ticketId);
@@ -329,6 +334,11 @@ public class Ticket implements Comparable<Ticket> {
     public TicketBuilder withSubject(String subject) {
       checkState();
       instance.setSubject(subject);
+      return this;
+    }
+    public TicketBuilder withDescription(String description) {
+      checkState();
+      instance.setDescription(description);
       return this;
     }
     public TicketBuilder withComment(String commentBody) {
@@ -341,15 +351,14 @@ public class Ticket implements Comparable<Ticket> {
       instance.setComment(new TicketComment(true, commentBody));
       return this;
     }
+    public TicketBuilder withExternalId(String externalId) {
+      checkState();
+      instance.setExternalId(externalId);
+      return this;
+    }
     public TicketBuilder byRequester(String name, String email) {
       checkState();
       instance.setRequester(new TicketRequester(name, email));
-      return this;
-    }
-    @Deprecated
-    public TicketBuilder setAssigneeId(Long assigneeId) {
-      checkState();
-      instance.setAssigneeId(assigneeId);
       return this;
     }
     public TicketBuilder withAssigneeId(Long assigneeId) {
