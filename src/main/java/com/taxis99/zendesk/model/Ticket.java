@@ -366,6 +366,11 @@ public class Ticket implements Comparable<Ticket> {
       instance.setAssigneeId(assigneeId);
       return this;
     }
+    public TicketBuilder withPriority(TicketPriority priority) {
+      checkState();
+      instance.setPriority(priority);
+      return this;
+    }
     public TicketBuilder withStatus(TicketStatus status) {
       checkState();
       if (instance.getAssigneeId() == null) {
