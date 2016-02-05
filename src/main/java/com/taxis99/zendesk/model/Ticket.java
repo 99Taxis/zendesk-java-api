@@ -351,6 +351,11 @@ public class Ticket implements Comparable<Ticket> {
       instance.setComment(new TicketComment(true, commentBody));
       return this;
     }
+    public TicketBuilder withCustomFields(List<TicketCustomField> customFields) {
+      checkState();
+      instance.setCustomFields(customFields);
+      return this;
+    }
     public TicketBuilder withExternalId(String externalId) {
       checkState();
       instance.setExternalId(externalId);
