@@ -366,6 +366,11 @@ public class Ticket implements Comparable<Ticket> {
       instance.setRequester(new TicketRequester(name, email));
       return this;
     }
+    public TicketBuilder byRequester(String name, String email, String phone) {
+      checkState();
+      instance.setRequester(new TicketRequester(name, email, phone));
+      return this;
+    }
     public TicketBuilder withAssigneeId(Long assigneeId) {
       checkState();
       instance.setAssigneeId(assigneeId);
