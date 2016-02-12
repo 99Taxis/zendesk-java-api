@@ -36,6 +36,19 @@ public class ZendeskApiTest {
   }
 
   @Test
+  public void testPostTicketWithGroupId() throws ZendeskException {
+    Ticket newTicket = Ticket.Builder()
+            .withSubject("testPostTicket")
+            .withDescription("testPostTicket")
+            .belongsToGroupId(28113417L)
+            .build();
+
+    final Ticket ticketCreated = zendeskApi.postTicket(newTicket);
+    assertNotNull(ticketCreated);
+    assertEquals(Long.valueOf(28113417L), ticketCreated.getGroupId());
+  }
+
+  @Test
   public void testUpdateTicket() throws ZendeskException {
     Ticket newTicket = Ticket.Builder().withSubject("testUpdateTicket").withDescription("testUpdateTicket").build();
     final Ticket ticketCreated = zendeskApi.postTicket(newTicket);

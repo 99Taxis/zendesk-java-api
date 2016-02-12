@@ -313,11 +313,25 @@ public class Ticket implements Comparable<Ticket> {
   public void setRequester(TicketRequester requester) {
     this.requester = requester;
   }
+
+  /**
+   * Group that ticket belongs
+   */
+  @Nullable Long groupId;
+
+  public void setGroupId(Long groupId) {
+    this.groupId = groupId;
+  }
+
+  @Nullable public Long getGroupId() {
+    return groupId;
+  }
+
   
   public static TicketBuilder Builder() {
     return new TicketBuilder();
   }
-  
+
   public static class TicketBuilder {
     final Ticket instance = new Ticket();
     boolean mutable = true;
@@ -379,6 +393,11 @@ public class Ticket implements Comparable<Ticket> {
     public TicketBuilder withPriority(TicketPriority priority) {
       checkState();
       instance.setPriority(priority);
+      return this;
+    }
+    public TicketBuilder belongsToGroupId(Long groupId) {
+      checkState();
+      instance.setGroupId(groupId);
       return this;
     }
     public TicketBuilder withStatus(TicketStatus status) {
