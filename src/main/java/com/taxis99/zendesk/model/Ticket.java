@@ -360,9 +360,19 @@ public class Ticket implements Comparable<Ticket> {
       instance.setComment(new TicketComment(false, commentBody));
       return this;
     }
+    public TicketBuilder withHtmlComment(String htmlCommentBody) {
+      checkState();
+      instance.setComment(new HtmlTicketComment(false, htmlCommentBody));
+      return this;
+    }
     public TicketBuilder withPublicComment(String commentBody) {
       checkState();
       instance.setComment(new TicketComment(true, commentBody));
+      return this;
+    }
+    public TicketBuilder withHtmlPublicComment(String htmlCommentBody) {
+      checkState();
+      instance.setComment(new HtmlTicketComment(true, htmlCommentBody));
       return this;
     }
     public TicketBuilder withCustomFields(List<TicketCustomField> customFields) {

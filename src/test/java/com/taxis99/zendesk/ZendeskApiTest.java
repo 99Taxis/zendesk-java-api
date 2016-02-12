@@ -32,7 +32,17 @@ public class ZendeskApiTest {
 
     assertNotNull(ticketCreated);
     assertEquals("testPostTicket", ticketCreated.getSubject());
+  }
 
+  @Test
+  public void testPostTicketWithHTML() throws ZendeskException {
+    Ticket newTicket = Ticket.Builder().withSubject("testPostTicketWithHtml")
+            .withDescription("testPostTicketWithHtml")
+            .withHtmlComment("<a href='http://www.99taxis.com'>99Taxis</a>")
+            .build();
+    final Ticket ticketCreated = zendeskApi.postTicket(newTicket);
+
+    assertNotNull(ticketCreated);
   }
 
   @Test
