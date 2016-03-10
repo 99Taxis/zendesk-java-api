@@ -1,7 +1,7 @@
 zendesk-java-api
 ================
 
-[![Build Status](https://travis-ci.org/99taxis/zendesk-java-api.svg?branch=master)](https://travis-ci.org/99taxis/zendesk-java-api)
+[![Build Status](https://travis-ci.org/99taxis/zendesk-java-api.svg?branch=master)](https://travis-ci.org/99taxis/zendesk-java-api) [![Coverage Status](https://coveralls.io/repos/github/99taxis/zendesk-java-api/badge.svg?branch=master)](https://coveralls.io/github/99taxis/zendesk-java-api?branch=master "Coveralls")
 
 Zendesk Java API
 
