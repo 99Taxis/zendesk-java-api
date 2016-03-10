@@ -1,6 +1,8 @@
 zendesk-java-api
 ================
 
+[![Build Status](https://travis-ci.org/99taxis/zendesk-java-api.svg?branch=master)](https://travis-ci.org/99taxis/zendesk-java-api)
+
 Zendesk Java API
 
 Publishing to 99Taxis' Maven Public
