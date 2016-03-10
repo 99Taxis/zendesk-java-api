@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -41,6 +42,19 @@ public class ZendeskApiTest {
     assertNotNull(ticketCreated);
     assertEquals("testPostTicket", ticketCreated.getSubject());
   }
+
+  @Test @Ignore
+  public void testPostTicketWithExternalId() throws ZendeskException {
+    Ticket newTicket = Ticket.Builder().withSubject("testPostTicket74").withDescription("postTicket74")
+        .withExternalId("unitTest74").build();
+    final Ticket ticketCreated = zendeskApi.postTicket(newTicket);
+
+    assertNotNull(ticketCreated);
+    assertEquals("testPostTicket74", ticketCreated.getSubject());
+    assertEquals("postTicket74", ticketCreated.getDescription());
+    assertEquals("unitTest74", ticketCreated.getExternalId());
+  }
+
 
   @Test
   public void testPostTicketWithHTML() throws ZendeskException {
@@ -81,12 +95,12 @@ public class ZendeskApiTest {
 
   @Test
   public void testGetTicketById() throws ZendeskException {
-    final Ticket ticketById = zendeskApi.getTicketById(1L);
+    final Ticket ticketById = zendeskApi.getTicketById(46239L);
     assertNotNull(ticketById);
-    assertEquals(ticketById.getId(), new Long(1L));
+    assertEquals(ticketById.getId(), Long.valueOf(46239L));
   }
 
-  @Test
+  @Test @Ignore
   public void testFindTicketByFieldValue() throws ZendeskException {
     String customValue = "1515125";
     final Ticket ticketByFieldValue = zendeskApi.findTicketByFieldValue(customValue).get();
@@ -108,7 +122,10 @@ public class ZendeskApiTest {
   public void testFindTicketByExternalId() throws ZendeskException, InterruptedException {
     final Optional<Ticket> ticketByExternalId = zendeskApi.findTicketByExternalId("unitTest74");
     assertNotEquals(Optional.<Ticket> empty(), ticketByExternalId);
-    assertEquals("testGetTicketByExternalId", ticketByExternalId.get().getSubject());
+    final Ticket ticket = ticketByExternalId.get();
+    assertEquals("testPostTicket74", ticket.getSubject());
+    assertEquals("postTicket74", ticket.getDescription());
+    assertEquals("unitTest74", ticket.getExternalId());
   }
 
   @Test
@@ -133,12 +150,11 @@ public class ZendeskApiTest {
 
   @Test
   public void testGetTicketsById() throws ZendeskException {
-    Long[] ids = {1L,2L};
+    Long[] ids = {1L, 2L, 46239L, 46247L};
 
     final Set<Ticket> ticketsById = zendeskApi.getTicketsById(Arrays.asList(ids));
     assertNotNull(ticketsById);
-    assertTrue("Should be size 2", ticketsById.size() == 2);
-
+    assertEquals(2, ticketsById.size());
   }
 
   @Test
@@ -146,6 +162,5 @@ public class ZendeskApiTest {
     final TicketFieldSpec ticketFieldById = zendeskApi.getTicketFieldById(29872748);
     assertNotNull(ticketFieldById);
   }
-
 
 }
