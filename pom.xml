@@ -166,6 +166,16 @@
           <version>${maven.deploy.plugin}</version>
         </plugin>
 
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>${cobertura.maven.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eluder.coveralls</groupId>
+          <artifactId>coveralls-maven-plugin</artifactId>
+          <version>${coveralls.maven.plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -194,6 +204,24 @@
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <configuration>
+          <format>xml</format>
+          <maxmem>256m</maxmem>
+          <!-- aggregated reports for multi-module projects -->
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <configuration>
+          <repoToken>${coveralls.repo.token}</repoToken>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -221,6 +249,8 @@
     <maven.project.info.reports.plugin>2.6</maven.project.info.reports.plugin>
     <maven.taglist.plugin>2.4</maven.taglist.plugin>
     <maven.versions.plugin>1.3.1</maven.versions.plugin>
+    <cobertura.maven.plugin>2.7</cobertura.maven.plugin>
+    <coveralls.maven.plugin>4.1.0</coveralls.maven.plugin>
   </properties>
 
 </project>
