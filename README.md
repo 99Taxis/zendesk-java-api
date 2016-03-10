@@ -5,6 +5,8 @@ zendesk-java-api
 
 Zendesk Java API
 
+[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence")
+
 Publishing to 99Taxis' Maven Public
 -----------------------------------
 
@@ -21,3 +23,11 @@ Publishing to 99Taxis' Maven Public
     git add ./VERSION
     git commit
     git push
+
+
+License
+-------
+
+`zendesk-java-api` is an open source software released under the MIT License.
+
+See the [LICENSE](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE) file for details.
