@@ -1,0 +1,14 @@
+#test execution script.
+
+language: java
+jdk:
+  - oraclejdk8
+sudo: false
+before_cache:
+  - du -h -d 2 $HOME/.m2/
+  - find $HOME/.m2 -name "*.lock" -type f -delete
+cache:
+  directories:
+    - $HOME/.m2
+script:
+  - mvn test
