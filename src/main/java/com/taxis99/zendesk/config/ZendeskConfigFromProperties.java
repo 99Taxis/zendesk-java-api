@@ -20,7 +20,7 @@ public class ZendeskConfigFromProperties implements ZendeskConfig {
       this.authToken = properties.getProperty("authToken");
       this.connTimeout = Integer.parseInt(properties.getProperty("connTimeout"), 10);
     } catch (IOException e) {
-      throw new RuntimeException("Unable to read ZenDesk config properties file", e);
+      throw new RuntimeException("Unable to read Zendesk config properties file", e);
     }
   }
 

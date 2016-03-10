@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 import com.taxis99.zendesk.config.GsonInstanceHolder;
+import com.taxis99.zendesk.config.ZendeskConfig;
+import com.taxis99.zendesk.config.ZendeskConfigFromEnvironment;
 import com.taxis99.zendesk.config.ZendeskConfigFromProperties;
 import com.taxis99.zendesk.exceptions.ZendeskException;
 import com.taxis99.zendesk.model.Ticket;
@@ -20,10 +22,16 @@ public class ZendeskApiTest {
   private final ZendeskApi zendeskApi;
 
   private final Gson gson = GsonInstanceHolder.getDefaultBuilder().setPrettyPrinting().create();
-  public ZendeskApiTest() {
-    zendeskApi = new ZendeskApi(gson, new ZendeskConfigFromProperties());
-  }
 
+  public ZendeskApiTest() {
+    final ZendeskConfig config;
+    if (ZendeskApiTest.class.getResource("/zendesk.properties") != null) {
+      config = new ZendeskConfigFromProperties();
+    } else {
+      config = new ZendeskConfigFromEnvironment();
+    }
+    zendeskApi = new ZendeskApi(gson, config);
+  }
 
   @Test
   public void testPostTicket() throws ZendeskException {
