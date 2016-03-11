@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<settings>
+  <pluginGroups>
+    <pluginGroup>com.updateimpact</pluginGroup>
+  </pluginGroups>
+  <profiles>
+    <profile>
+      <id>updateimpact</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+  </profiles>
+</settings>
