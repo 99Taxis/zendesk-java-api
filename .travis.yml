@@ -13,4 +13,4 @@ cache:
 script:
   - mvn clean test
 after_success:
-  - mvn -Dcoveralls.repo.token=$COVERALLS_REPO_TOKEN cobertura:cobertura coveralls:report
+  - mvn -Dcoveralls.repo.token=$COVERALLS_REPO_TOKEN jacoco:report coveralls:report
