@@ -5,7 +5,7 @@ zendesk-java-api
 
 Zendesk Java API
 
-[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence")
+[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence")  [![GitHub tag](https://img.shields.io/github/tag/99taxis/zendesk-java-api.svg)](https://github.com/99taxis/zendesk-java-api/tags)
 
 Publishing to 99Taxis' Maven Public
 -----------------------------------
