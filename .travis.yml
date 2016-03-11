@@ -14,4 +14,5 @@ script:
   - mvn clean test
 after_success:
   - mvn -Dcoveralls.repo.token=$COVERALLS_REPO_TOKEN jacoco:report coveralls:report
+  - mvn updateimpact:submit
   - bash <(curl -s https://codecov.io/bash)
