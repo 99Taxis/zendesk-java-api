@@ -1,13 +1,13 @@
 zendesk-java-api
 ================
 
-[![Build Status](https://travis-ci.org/99taxis/zendesk-java-api.svg?branch=master)](https://travis-ci.org/99taxis/zendesk-java-api) [![Codacy Badge](https://api.codacy.com/project/badge/grade/6cddab4d424143e78b31f34935f16f45)](https://www.codacy.com/app/99taxis/zendesk-java-api) [![Coverage Status](https://coveralls.io/repos/github/99taxis/zendesk-java-api/badge.svg?branch=master)](https://coveralls.io/github/99taxis/zendesk-java-api?branch=master "Coveralls") [![Dependencies](https://app.updateimpact.com/badge/704215565069324288/zendesk-java-api.svg?config=test)](https://app.updateimpact.com/latest/704215565069324288/zendesk-java-api) [![Join the chat at https://gitter.im/99taxis/zendesk-java-api](https://badges.gitter.im/99taxis/zendesk-java-api.svg)](https://gitter.im/99taxis/zendesk-java-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/99taxis/zendesk-java-api.svg?branch=master)](https://travis-ci.org/99taxis/zendesk-java-api) [![Codacy Badge](https://api.codacy.com/project/badge/grade/6cddab4d424143e78b31f34935f16f45)](https://www.codacy.com/app/99taxis/zendesk-java-api) [![Coverage Status](https://coveralls.io/repos/github/99taxis/zendesk-java-api/badge.svg?branch=master)](https://coveralls.io/github/99taxis/zendesk-java-api?branch=master "Coveralls") [![Dependencies](https://app.updateimpact.com/badge/704215565069324288/zendesk-java-api.svg?config=test)](https://app.updateimpact.com/latest/704215565069324288/zendesk-java-api) [![Dependency Status](https://www.versioneye.com/user/projects/56e7b4de96f80c0054235070/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e7b4de96f80c0054235070) [![Join the chat at https://gitter.im/99taxis/zendesk-java-api](https://badges.gitter.im/99taxis/zendesk-java-api.svg)](https://gitter.im/99taxis/zendesk-java-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Zendesk Java API is a simple client library for Java that provides an interface to the [Zendesk Core API](https://developer.zendesk.com/rest_api/docs/core/introduction).
 
 _Note: zendesk-java-api is a partial implementation of the Zendesk Core API. The Zendesk Core API and the Zendesk Java API are both under development, and this library is subject to frequent change._
 
-[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence")  [![GitHub tag](https://img.shields.io/github/tag/99taxis/zendesk-java-api.svg)](https://github.com/99taxis/zendesk-java-api/tags)
+[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence") [![GitHub tag](https://img.shields.io/github/tag/99taxis/zendesk-java-api.svg)](https://github.com/99taxis/zendesk-java-api/tags) [![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/99taxis/awsscala/commits/master)
 
 
 ### Supported Methods
