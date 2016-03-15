@@ -41,19 +41,18 @@ public class ZendeskApi {
   private final String zendeskHost;
   private final int connTimeout;
 
+  private final Function<String, Ticket>           parseJsonToTicket          = result -> gson.fromJson(result, TicketContainer.class).getTicket();
+  private final Function<String, Set<Ticket>>      parseJsonToTicketSet       = result -> gson.fromJson(result, TicketSetContainer.class).getTickets();
+  private final Function<String, Optional<Ticket>> parseJsonSearchToTicket    = result -> gson.fromJson(result, TicketSearchResult.class).getFirstTicket();
+  private final Function<String, User>             parseJsonToUser            = result -> gson.fromJson(result, UserContainer.class).getUser();
+  private final Function<String, TicketFieldSpec>  parseJsonToTicketFieldSpec = result -> gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
+
   @Inject public ZendeskApi(@Nonnull Gson gson, @Named("Authorized") final ZendeskConfig config) {
     this.gson = gson;
     this.authEncoded = new String(Base64.encodeBase64(config.getAuth().getBytes()), StandardCharsets.US_ASCII);
     this.zendeskHost = format("https://%s.zendesk.com", config.getSubdomain());
     this.connTimeout = config.getConnTimeout();
   }
-
-  final private Function<String, Ticket> parseJsonToTicket                   = result -> gson.fromJson(result, TicketContainer.class).getTicket();
-  final private Function<String, Set<Ticket>> parseJsonToTicketSet           = result -> gson.fromJson(result, TicketSetContainer.class).getTickets();
-  final private Function<String, Optional<Ticket>> parseJsonSearchToTicket   = result -> gson.fromJson(result, TicketSearchResult.class).getFirstTicket();
-  final private Function<String, User> parseJsonToUser                       = result -> gson.fromJson(result, UserContainer.class).getUser();
-  final private Function<String, TicketFieldSpec> parseJsonToTicketFieldSpec = result -> gson.fromJson(result, TicketFieldSpecContainer.class).getTicketFieldSpec();
-
 
   public Ticket postTicket(final Ticket ticket) throws ZendeskException {
     Preconditions.checkArgument(ticket.getId() == null, "Cannot create ticket with previously set id");
