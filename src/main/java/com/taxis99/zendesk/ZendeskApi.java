@@ -185,9 +185,6 @@ public class ZendeskApi {
 
 class UserContainer {
   private User user;
-  public UserContainer(User user) {
-    this.user = user;
-  }
   User getUser() {
     return user;
   }
