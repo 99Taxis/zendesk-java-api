@@ -145,7 +145,7 @@ public class ZendeskApiTest {
   public void testGetRecentTickets() throws ZendeskException {
     final Set<Ticket> recentTickets = zendeskApi.getRecentTickets();
     assertNotNull(recentTickets);
-    assertTrue("recent tickets should not be null", !recentTickets.isEmpty());
+    assertFalse("recent tickets should not be empty", recentTickets.isEmpty());
   }
 
   @Test
