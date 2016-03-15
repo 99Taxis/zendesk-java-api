@@ -18,11 +18,12 @@ public class GsonInstanceHolder {
     .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX") // ISO 8601
     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
 
+  private static final Gson gson = defaultBuilder.create();
+
   public static GsonBuilder getDefaultBuilder() {
     return defaultBuilder;
   }
-  private static final Gson gson = defaultBuilder.create();
-  
+
   public static Gson getGsonInstance() {
     return gson;
   }
