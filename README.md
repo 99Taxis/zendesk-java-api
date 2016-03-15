@@ -55,8 +55,8 @@ import com.taxis99.zendesk.config.ZendeskConfigFromProperties;
 
 ...
 
-  Gson gson;
-  ZendeskConfig config;
+  final Gson gson;
+  final ZendeskConfig config;
 
   gson = GsonInstanceHolder.getDefaultBuilder().setPrettyPrinting().create();
   if (ZendeskApiTest.class.getResource("/zendesk.properties") != null) {
@@ -73,7 +73,7 @@ import com.taxis99.zendesk.ZendeskApi;
 
 ...
 
-  zendeskApi = new ZendeskApi(gson, config);
+  final ZendeskApi zendeskApi = new ZendeskApi(gson, config);
 ```
 
 You can then use Zendesk API methods:
@@ -83,7 +83,7 @@ import com.taxis99.zendesk.model.Ticket;
 
 ...
 
-  Ticket ticket = zendeskApi.getTicketById(46239L);
+  final Ticket ticket = zendeskApi.getTicketById(46239L);
 ```
 
 
