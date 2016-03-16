@@ -90,6 +90,6 @@ import com.taxis99.zendesk.model.Ticket;
 License
 -------
 
-`zendesk-java-api` is an open source software released under the MIT License.
+`zendesk-java-api` is open source software released under the MIT License.
 
 See the [LICENSE](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE) file for details.
