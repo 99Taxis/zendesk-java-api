@@ -7,7 +7,7 @@ Zendesk Java API is a simple client library for Java that provides an interface 
 
 _Note: zendesk-java-api is a partial implementation of the Zendesk Core API. The Zendesk Core API and the Zendesk Java API are both under development, and this library is subject to frequent change._
 
-[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence") [![GitHub tag](https://img.shields.io/github/tag/99taxis/zendesk-java-api.svg)](https://github.com/99taxis/zendesk-java-api/tags) [![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/99taxis/awsscala/commits/master)
+[![License](http://img.shields.io/:license-MIT-blue.svg)](https://github.com/99taxis/zendesk-java-api/blob/master/LICENSE "MIT Licence") [![GitHub tag](https://img.shields.io/github/tag/99taxis/zendesk-java-api.svg)](https://github.com/99taxis/zendesk-java-api/tags) [![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/99taxis/zendesk-java-api/commits/master)
 
 
 ### Supported Methods
