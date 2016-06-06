@@ -4,11 +4,7 @@ coverage:
   status:
     patch:
       default:
-        branches:
-        - '!\[wip\]*'
-        target: '80'
+        target: 80
     project:
       default:
-        branches:
-        - '!\[wip\]*'
         target: auto
